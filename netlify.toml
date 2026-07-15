@@ -1,0 +1,17 @@
+# Netlify Deployment Configuration for Artverse Frontend
+[build]
+  command = "npm run build:frontend"
+  publish = "dist"
+
+# Proxy rule to route frontend /api/* requests to your Vercel backend
+[[redirects]]
+  from = "/api/*"
+  to = "https://your-vercel-backend-url.vercel.app/api/:splat"
+  status = 200
+  force = true
+
+# Single Page Application (SPA) routing fallback
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

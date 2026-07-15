@@ -1,0 +1,6 @@
+{
+  "name": "ArtVerse",
+  "description": "Platform Galeri Seni Rupa Premium dengan Fitur Checkout Keranjang, Status Pesanan Real-time, dan Portal Manajemen Penjual.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

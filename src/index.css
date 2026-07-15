@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Playfair Display", serif;
+  --font-sans: "Plus Jakarta Sans", sans-serif;
+  
+  --color-gold-50: #fefbeb;
+  --color-gold-100: #fef3c7;
+  --color-gold-200: #fde68a;
+  --color-gold-300: #fcd34d;
+  --color-gold-400: #fbbf24;
+  --color-gold-500: #f0bf5c;
+  --color-gold-600: #c89b3c;
+  --color-gold-700: #b45309;
+}
+
+body {
+  background-color: #0d0d0d;
+  color: #ebe1d6;
+  font-family: var(--font-sans);
+  scroll-behavior: smooth;
+}
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #17130c;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c89b3c;
+  border-radius: 3px;
+}
+
+/* Glass panel */
+.glass-panel {
+  background: rgba(24, 24, 24, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(200, 155, 60, 0.15);
+}
+
+.custom-dashed {
+  border: 2px dashed rgba(200, 155, 60, 0.25);
+  transition: all 0.3s ease;
+}
+.custom-dashed:hover {
+  border-color: rgba(240, 191, 92, 0.6);
+  background: rgba(240, 191, 92, 0.02);
+}
+
+.ambient-glow {
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+}
+
