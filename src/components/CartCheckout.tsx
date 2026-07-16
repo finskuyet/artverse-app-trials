@@ -51,6 +51,24 @@ export default function CartCheckout({
       .catch((err) => console.error("Error fetching payment settings:", err));
   }, []);
 
+  // Validate cart against current catalog automatically when opening cart
+  useEffect(() => {
+    if (cart.length > 0) {
+      fetch("/api/artworks")
+        .then(res => res.json())
+        .then((data: Artwork[]) => {
+          const availableIds = new Set(data.map(a => a.id));
+          cart.forEach(item => {
+            if (!availableIds.has(item.id)) {
+              removeFromCart(item.id);
+            }
+          });
+        })
+        .catch(err => console.error("Error validating cart:", err));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   const [receiptImage, setReceiptImage] = useState<string>("");
   const [receiptFileName, setReceiptFileName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -707,7 +725,7 @@ export default function CartCheckout({
                     }`}
                   >
                     <span>
-                      {isSubmitting ? "Memproses Checkout..." : "Selesaikan &amp; Checkout"}
+                      {isSubmitting ? "Memproses Checkout..." : "Selesaikan Checkout"}
                     </span>
                     <ChevronRight size={16} />
                   </button>

@@ -343,6 +343,26 @@ export const dbRepository = {
     return db.artworks.length < len;
   },
 
+  deleteSoldArtworks: async (): Promise<number> => {
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("artworks")
+        .delete()
+        .eq("status", "Terjual")
+        .select();
+      if (error) {
+        console.error("Supabase deleteSoldArtworks error:", error);
+        return 0;
+      }
+      return data ? data.length : 0;
+    }
+    const db = loadLocalDb();
+    const initialLen = db.artworks.length;
+    db.artworks = db.artworks.filter((a: any) => a.status !== "Terjual");
+    saveLocalDb(db);
+    return initialLen - db.artworks.length;
+  },
+
   // Orders
   getOrders: async (): Promise<Order[]> => {
     if (supabase) {
@@ -406,6 +426,45 @@ export const dbRepository = {
       return db.orders[idx];
     }
     throw new Error("Order not found");
+  },
+
+  deleteOrder: async (id: string): Promise<boolean> => {
+    if (supabase) {
+      const { data, error } = await supabase.from("orders").delete().eq("id", id).select();
+      if (error) {
+        console.error("Supabase deleteOrder error:", error);
+        return false;
+      }
+      if (!data || data.length === 0) {
+        return false;
+      }
+      return true;
+    }
+    const db = loadLocalDb();
+    const len = db.orders.length;
+    db.orders = db.orders.filter((o: any) => o.id !== id);
+    saveLocalDb(db);
+    return db.orders.length < len;
+  },
+
+  deletePaidOrders: async (): Promise<number> => {
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("orders")
+        .delete()
+        .eq("status", "Dibayar")
+        .select();
+      if (error) {
+        console.error("Supabase deletePaidOrders error:", error);
+        return 0;
+      }
+      return data ? data.length : 0;
+    }
+    const db = loadLocalDb();
+    const initialLen = db.orders.length;
+    db.orders = db.orders.filter((o: any) => o.status !== "Dibayar");
+    saveLocalDb(db);
+    return initialLen - db.orders.length;
   },
 
   // Messages

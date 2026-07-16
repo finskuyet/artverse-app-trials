@@ -122,7 +122,18 @@ app.put("/api/artworks/:id", async (req, res) => {
   }
 });
 
-// 5. Delete artwork
+// 5. Delete all sold artworks
+app.delete("/api/artworks/sold", async (req, res) => {
+  try {
+    const deletedCount = await dbRepository.deleteSoldArtworks();
+    res.json({ success: true, deletedCount });
+  } catch (err) {
+    console.error(`Error deleting sold artworks:`, err);
+    res.status(500).json({ error: "Gagal menghapus karya seni yang terjual" });
+  }
+});
+
+// 5b. Delete artwork by ID
 app.delete("/api/artworks/:id", async (req, res) => {
   const { id } = req.params;
   try {
@@ -290,6 +301,33 @@ app.put("/api/orders/:id", async (req, res) => {
   }
 });
 
+// 8b. Delete all paid orders (Reset Omset)
+app.delete("/api/orders/paid", async (req, res) => {
+  try {
+    const deletedCount = await dbRepository.deletePaidOrders();
+    res.json({ success: true, deletedCount });
+  } catch (err) {
+    console.error(`Error deleting paid orders:`, err);
+    res.status(500).json({ error: "Gagal menghapus pesanan yang sudah dibayar" });
+  }
+});
+
+// 8c. Delete an order
+app.delete("/api/orders/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const success = await dbRepository.deleteOrder(id);
+    if (success) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: "Pesanan tidak ditemukan" });
+    }
+  } catch (err) {
+    console.error(`Error deleting order ${id}:`, err);
+    res.status(500).json({ error: "Gagal menghapus pesanan" });
+  }
+});
+
 // 9. Send client message / inquiry
 app.post("/api/messages", async (req, res) => {
   const { name, email, phone, text, artworkTitle } = req.body;
@@ -329,8 +367,16 @@ app.post("/api/messages", async (req, res) => {
 
 // 10. Get messages
 app.get("/api/messages", async (req, res) => {
+  const { email } = req.query;
   try {
     const messages = await dbRepository.getMessages();
+    if (email) {
+      const searchEmail = String(email).toLowerCase().trim();
+      const filtered = messages.filter((m: Message) => 
+        m.email && m.email.toLowerCase() === searchEmail
+      );
+      return res.json(filtered);
+    }
     res.json(messages);
   } catch (err) {
     console.error("Error getting messages:", err);

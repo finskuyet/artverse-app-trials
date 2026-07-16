@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Search, Mail, FileText, CheckCircle2, Clock, AlertTriangle, AlertCircle, ShoppingBag, MapPin, Calendar, CreditCard, Loader2, SearchX, ExternalLink, ShieldAlert, Truck, Copy, Check } from "lucide-react";
-import { Order } from "../types";
+import { Search, Mail, FileText, CheckCircle2, Clock, AlertTriangle, AlertCircle, ShoppingBag, MapPin, Calendar, CreditCard, Loader2, SearchX, ExternalLink, ShieldAlert, Truck, Copy, Check, MessageSquare } from "lucide-react";
+import { Order, Message } from "../types";
 
 interface MyTransactionsProps {
   searchContact: string;
@@ -11,6 +11,7 @@ interface MyTransactionsProps {
 export default function MyTransactions({ searchContact, setSearchContact, theme = "dark" }: MyTransactionsProps) {
   const [emailInput, setEmailInput] = useState(searchContact || "");
   const [orders, setOrders] = useState<Order[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(!!searchContact);
   const [errorMsg, setErrorMsg] = useState("");
@@ -29,17 +30,23 @@ export default function MyTransactions({ searchContact, setSearchContact, theme 
     try {
       setLoading(true);
       setErrorMsg("");
-      const res = await fetch(`/api/orders?contact=${encodeURIComponent(contactVal.trim())}`);
-      const data = await res.json();
-      if (res.ok) {
-        setOrders(data);
+      const [resOrders, resMessages] = await Promise.all([
+        fetch(`/api/orders?contact=${encodeURIComponent(contactVal.trim())}`),
+        fetch(`/api/messages?email=${encodeURIComponent(contactVal.trim())}`)
+      ]);
+      const dataOrders = await resOrders.json();
+      const dataMessages = await resMessages.json();
+      
+      if (resOrders.ok && resMessages.ok) {
+        setOrders(dataOrders);
+        setMessages(dataMessages);
         setSearched(true);
       } else {
-        setErrorMsg(data.error || "Gagal memuat riwayat transaksi.");
+        setErrorMsg(dataOrders.error || dataMessages.error || "Gagal memuat data transaksi & pesan.");
       }
     } catch (err) {
-      console.error("Error loading orders", err);
-      setErrorMsg("Gagal memuat riwayat transaksi karena gangguan jaringan.");
+      console.error("Error loading data", err);
+      setErrorMsg("Gagal memuat data transaksi karena gangguan jaringan.");
     } finally {
       setLoading(false);
     }
@@ -58,10 +65,13 @@ export default function MyTransactions({ searchContact, setSearchContact, theme 
     if (searched && emailInput.trim()) {
       intervalId = setInterval(() => {
         // Silent update to avoid loading spinner flickering
-        fetch(`/api/orders?contact=${encodeURIComponent(emailInput.trim())}`)
-          .then((res) => res.json())
-          .then((data) => {
-            setOrders(data);
+        Promise.all([
+          fetch(`/api/orders?contact=${encodeURIComponent(emailInput.trim())}`).then(res => res.json()),
+          fetch(`/api/messages?email=${encodeURIComponent(emailInput.trim())}`).then(res => res.json())
+        ])
+          .then(([dataOrders, dataMessages]) => {
+            setOrders(dataOrders);
+            setMessages(dataMessages);
           })
           .catch((err) => console.error("Polling error", err));
       }, 5000);
@@ -172,7 +182,7 @@ export default function MyTransactions({ searchContact, setSearchContact, theme 
             </div>
           )}
 
-          {orders.length === 0 ? (
+          {orders.length === 0 && messages.length === 0 ? (
             <div className={`py-20 text-center rounded-xl flex flex-col items-center justify-center gap-4 ${
               isDark 
                 ? "glass-panel" 
@@ -180,19 +190,21 @@ export default function MyTransactions({ searchContact, setSearchContact, theme 
             }`}>
               <SearchX className={isDark ? "text-[#f0bf5c]/20" : "text-[#c89b3c]/20"} size={48} />
               <p className={`text-base font-sans ${isDark ? "text-[#d2c5b1]" : "text-stone-700"}`}>
-                Tidak ada pesanan ditemukan yang berasosiasi dengan email:
+                Tidak ada pesanan atau pesan ditemukan yang berasosiasi dengan email:
                 <strong className={`block mt-1 select-all ${isDark ? "text-white" : "text-stone-950"}`}>{emailInput}</strong>
               </p>
               <p className={`text-xs ${isDark ? "text-[#9b8f7d]" : "text-stone-400"}`}>
-                Pastikan pengetikan email Anda sama persis saat melakukan transaksi checkout.
+                Pastikan pengetikan email Anda sama persis saat melakukan transaksi atau mengirim pesan.
               </p>
             </div>
           ) : (
             <div className="space-y-8">
-              <div className={`flex items-center justify-between text-xs font-semibold ${isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"}`}>
-                <span>DITEMUKAN {orders.length} TRANSAKSI</span>
-                <span className={`${isDark ? "text-[#9b8f7d]" : "text-stone-500"} animate-pulse`}>● Terkoneksi Real-time</span>
-              </div>
+              {orders.length > 0 && (
+                <>
+                  <div className={`flex items-center justify-between text-xs font-semibold ${isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"}`}>
+                    <span>DITEMUKAN {orders.length} TRANSAKSI</span>
+                    <span className={`${isDark ? "text-[#9b8f7d]" : "text-stone-500"} animate-pulse`}>● Terkoneksi Real-time</span>
+                  </div>
 
               {orders.map((order) => {
                 const orderDate = new Date(order.date).toLocaleDateString("id-ID", {
@@ -427,6 +439,79 @@ export default function MyTransactions({ searchContact, setSearchContact, theme 
                   </div>
                 );
               })}
+                </>
+              )}
+
+              {/* Messages & Replies Section */}
+              {messages.length > 0 && (
+                <>
+                  <div className={`flex items-center justify-between text-xs font-semibold mt-12 pt-8 border-t ${isDark ? "text-[#f0bf5c] border-[#f0bf5c]/20" : "text-[#c89b3c] border-stone-200"}`}>
+                    <span className="flex items-center gap-2">
+                      <MessageSquare size={14} /> RIWAYAT PESAN & BALASAN ({messages.length})
+                    </span>
+                  </div>
+                  <div className="space-y-4">
+                    {messages.map((msg) => {
+                      const msgDate = new Date(msg.date).toLocaleDateString("id-ID", {
+                        weekday: "short",
+                        year: "numeric",
+                        month: "short",
+                        day: "numeric",
+                      });
+                      const repliedDate = msg.repliedAt ? new Date(msg.repliedAt).toLocaleDateString("id-ID", {
+                        year: "numeric", month: "short", day: "numeric", hour: "2-digit", minute: "2-digit"
+                      }) : null;
+
+                      return (
+                        <div key={msg.id} className={`rounded-xl overflow-hidden shadow border transition-all ${
+                          isDark 
+                            ? "glass-panel border-[#f0bf5c]/10" 
+                            : "bg-white border-stone-200 shadow-sm"
+                        }`}>
+                          <div className={`p-4 md:p-6 space-y-4 ${
+                            msg.replyText 
+                              ? isDark ? "border-l-4 border-l-[#f0bf5c]" : "border-l-4 border-l-[#c89b3c]"
+                              : "border-l-4 border-l-transparent"
+                          }`}>
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <h5 className={`font-bold text-sm ${isDark ? "text-white" : "text-stone-900"}`}>
+                                  Terkait: {msg.artworkTitle || "Pertanyaan Umum"}
+                                </h5>
+                                <span className={`text-[10px] ${isDark ? "text-[#9b8f7d]" : "text-stone-500"}`}>{msgDate}</span>
+                              </div>
+                              <span className={`text-[10px] font-bold px-2 py-1 rounded-full ${
+                                msg.replyText 
+                                  ? isDark ? "bg-[#f0bf5c]/20 text-[#f0bf5c]" : "bg-[#c89b3c]/20 text-[#c89b3c]"
+                                  : isDark ? "bg-stone-800 text-stone-400" : "bg-stone-100 text-stone-500"
+                              }`}>
+                                {msg.replyText ? "Dibalas" : "Menunggu Balasan"}
+                              </span>
+                            </div>
+                            
+                            <div className={`p-3 rounded-lg text-xs leading-relaxed ${isDark ? "bg-[#110e08] text-[#d2c5b1]" : "bg-stone-50 text-stone-700"}`}>
+                              <span className="block font-bold text-[10px] mb-1 opacity-60">PESAN ANDA:</span>
+                              {msg.text}
+                            </div>
+                            
+                            {msg.replyText && (
+                              <div className={`p-3 rounded-lg text-xs leading-relaxed border ${
+                                isDark ? "bg-[#f0bf5c]/5 border-[#f0bf5c]/20 text-white" : "bg-amber-50/50 border-amber-200/60 text-stone-900"
+                              }`}>
+                                <span className="block font-bold text-[10px] mb-1 flex items-center gap-1">
+                                  <Check size={10} className={isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"} />
+                                  <span className={isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"}>BALASAN PENJUAL (ARTVERSE) - {repliedDate}</span>
+                                </span>
+                                {msg.replyText}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </>
+              )}
             </div>
           )}
         </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Sparkles, 
@@ -32,6 +32,7 @@ export default function TutorialGuide({
   const isDark = theme === "dark";
   const [currentStep, setCurrentStep] = useState(0);
   const [targetRect, setTargetRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+  const [isMobileView, setIsMobileView] = useState(false);
 
   // Configuration of all steps for the Guided Tour
   const tourSteps = [
@@ -86,6 +87,38 @@ export default function TutorialGuide({
     }
   ];
 
+  // Find target element: try desktop ID first, then mobile fallback
+  const findTargetElement = useCallback((targetId: string): HTMLElement | null => {
+    // Try the desktop element first
+    const desktopEl = document.getElementById(targetId);
+    if (desktopEl) {
+      const rect = desktopEl.getBoundingClientRect();
+      // Check if the element is actually visible (not hidden by CSS)
+      if (rect.width > 0 && rect.height > 0) {
+        return desktopEl;
+      }
+    }
+    // Fallback: try mobile version
+    const mobileEl = document.getElementById(`${targetId}-mobile`);
+    if (mobileEl) {
+      const rect = mobileEl.getBoundingClientRect();
+      if (rect.width > 0 && rect.height > 0) {
+        return mobileEl;
+      }
+    }
+    return null;
+  }, []);
+
+  // Detect mobile/tablet view (under 1024px)
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobileView(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   // Dynamic real-time tracking of the highlighted DOM element
   useEffect(() => {
     if (!isOpen) {
@@ -97,14 +130,16 @@ export default function TutorialGuide({
     if (!currentStepData) return;
 
     const updatePosition = () => {
-      const el = document.getElementById(currentStepData.targetId);
+      const el = findTargetElement(currentStepData.targetId);
       if (el) {
-        // Automatically scroll to view if button is out of viewport (mostly for mobile responsive views)
-        el.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+        // Scroll into view to center of screen so bottom card doesn't overlap it
+        el.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+
+        // Use viewport-relative coordinates (fixed positioning)
         const rect = el.getBoundingClientRect();
         setTargetRect({
-          top: rect.top + window.scrollY,
-          left: rect.left + window.scrollX,
+          top: rect.top,
+          left: rect.left,
           width: rect.width,
           height: rect.height
         });
@@ -113,19 +148,21 @@ export default function TutorialGuide({
       }
     };
 
+    // Initial position + delayed update for layout settling
     updatePosition();
-    // Short interval to wait for tab animations / layout renders
-    const timer = setTimeout(updatePosition, 100);
+    const timer = setTimeout(updatePosition, 150);
+    const timer2 = setTimeout(updatePosition, 400);
 
     window.addEventListener("resize", updatePosition);
-    window.addEventListener("scroll", updatePosition);
+    window.addEventListener("scroll", updatePosition, true); // capture phase for inner scrolls
 
     return () => {
       clearTimeout(timer);
+      clearTimeout(timer2);
       window.removeEventListener("resize", updatePosition);
-      window.removeEventListener("scroll", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [currentStep, isOpen]);
+  }, [currentStep, isOpen, findTargetElement]);
 
   const handleNext = () => {
     if (currentStep < tourSteps.length - 1) {
@@ -151,9 +188,41 @@ export default function TutorialGuide({
 
   const currentStepData = tourSteps[currentStep];
 
+  // Calculate clamped tooltip position to stay within viewport
+  const getTooltipStyle = () => {
+    if (!targetRect) return {};
+    
+    const tooltipWidth = isMobileView ? 160 : 200;
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Determine if tooltip should go above or below the target
+    const spaceBelow = viewportHeight - (targetRect.top + targetRect.height);
+    const spaceAbove = targetRect.top;
+    const showBelow = spaceBelow > 100 || spaceBelow >= spaceAbove;
+    
+    // Calculate horizontal center, then clamp to viewport
+    let tooltipLeft = targetRect.left + (targetRect.width / 2) - (tooltipWidth / 2);
+    const margin = 8;
+    tooltipLeft = Math.max(margin, Math.min(tooltipLeft, viewportWidth - tooltipWidth - margin));
+    
+    const tooltipTop = showBelow 
+      ? targetRect.top + targetRect.height + 12
+      : targetRect.top - 12; // Will use bottom positioning via transform
+
+    return {
+      top: tooltipTop,
+      left: tooltipLeft,
+      width: `${tooltipWidth}px`,
+      showBelow,
+    };
+  };
+
+  const tooltipStyle = getTooltipStyle();
+
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] overflow-x-hidden overflow-y-auto">
+      <div className="fixed inset-0 z-[100] overflow-hidden">
         {/* Semi-transparent dark overlay */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -165,14 +234,15 @@ export default function TutorialGuide({
 
         {/* Real-time Target Highlight Spotlight & Circling Rings */}
         {targetRect && (
-          <div className="absolute inset-0 pointer-events-none z-[110]">
+          <div className="fixed inset-0 pointer-events-none z-[110]">
             {/* Spotlight Glow Border circling the button */}
             <motion.div
+              key={`spotlight-${currentStep}`}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 150, damping: 20 }}
-              className="absolute border-2 border-[#f0bf5c] rounded-full shadow-[0_0_30px_rgba(240,191,92,0.8)]"
+              className="fixed border-2 border-[#f0bf5c] rounded-full shadow-[0_0_30px_rgba(240,191,92,0.8)]"
               style={{
                 top: targetRect.top - 6,
                 left: targetRect.left - 6,
@@ -184,9 +254,10 @@ export default function TutorialGuide({
               <div className="absolute -inset-3 border-2 border-[#f0bf5c]/40 rounded-full animate-ping opacity-60" />
             </motion.div>
 
-            {/* Bouncing Pointer Arrow with tooltip explaining exactly what the highlighted button is */}
+            {/* Bouncing Pointer Arrow with tooltip */}
             <motion.div
-              initial={{ opacity: 0, y: 8 }}
+              key={`tooltip-${currentStep}`}
+              initial={{ opacity: 0, y: tooltipStyle.showBelow ? 8 : -8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ 
                 type: "spring", 
@@ -196,33 +267,49 @@ export default function TutorialGuide({
                 repeatType: "reverse",
                 duration: 1.2
               }}
-              className="absolute flex flex-col items-center justify-center"
+              className="fixed flex flex-col items-center justify-center"
               style={{
-                top: targetRect.top + targetRect.height + 12,
-                left: targetRect.left + (targetRect.width / 2) - 100, // horizontal center
-                width: "200px"
+                top: tooltipStyle.showBelow ? tooltipStyle.top : undefined,
+                bottom: tooltipStyle.showBelow ? undefined : `${window.innerHeight - (targetRect.top - 12)}px`,
+                left: tooltipStyle.left,
+                width: tooltipStyle.width,
               }}
             >
-              {/* Arrow caret pointing UP */}
-              <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-b-[6px] border-l-transparent border-r-transparent border-b-[#f0bf5c] filter drop-shadow-[0_-2px_4px_rgba(240,191,92,0.5)]" />
-              
-              {/* Tooltip Content Card with glassmorphic look */}
-              <div className="mt-1 bg-black/95 text-white border border-[#f0bf5c] text-[10px] font-bold tracking-wider py-1.5 px-3 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.8)] text-center flex flex-col gap-0.5 max-w-[190px]">
-                <span className="text-[#f0bf5c] font-extrabold uppercase text-[9px] tracking-widest">{currentStepData.title}</span>
-                <span className="text-stone-300 font-normal leading-normal">{currentStepData.tooltip}</span>
-              </div>
+              {/* Arrow & Tooltip - order flips based on position */}
+              {tooltipStyle.showBelow ? (
+                <>
+                  {/* Arrow caret pointing UP */}
+                  <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-b-[6px] border-l-transparent border-r-transparent border-b-[#f0bf5c] filter drop-shadow-[0_-2px_4px_rgba(240,191,92,0.5)]" />
+                  {/* Tooltip Content Card */}
+                  <div className="mt-1 bg-black/95 text-white border border-[#f0bf5c] text-[10px] font-bold tracking-wider py-1.5 px-3 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.8)] text-center flex flex-col gap-0.5 max-w-full">
+                    <span className="text-[#f0bf5c] font-extrabold uppercase text-[9px] tracking-widest leading-tight">{currentStepData.title}</span>
+                    <span className="text-stone-300 font-normal leading-normal">{currentStepData.tooltip}</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Tooltip Content Card */}
+                  <div className="mb-1 bg-black/95 text-white border border-[#f0bf5c] text-[10px] font-bold tracking-wider py-1.5 px-3 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.8)] text-center flex flex-col gap-0.5 max-w-full">
+                    <span className="text-[#f0bf5c] font-extrabold uppercase text-[9px] tracking-widest leading-tight">{currentStepData.title}</span>
+                    <span className="text-stone-300 font-normal leading-normal">{currentStepData.tooltip}</span>
+                  </div>
+                  {/* Arrow caret pointing DOWN */}
+                  <div className="w-0 h-0 border-l-[6px] border-r-[6px] border-t-[6px] border-l-transparent border-r-transparent border-t-[#f0bf5c] filter drop-shadow-[0_2px_4px_rgba(240,191,92,0.5)]" />
+                </>
+              )}
             </motion.div>
           </div>
         )}
 
         {/* Guided Tour Floating popover card */}
-        <div className="fixed inset-0 pointer-events-none z-[120] flex items-center justify-center p-4">
+        <div className="fixed inset-0 pointer-events-none z-[120] flex items-end sm:items-center justify-center p-3 sm:p-4">
           <motion.div
+            key={`card-${currentStep}`}
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ type: "spring", duration: 0.5 }}
-            className={`pointer-events-auto max-w-sm w-full rounded-2xl p-6 border shadow-2xl relative flex flex-col justify-between ${
+            className={`pointer-events-auto w-full max-w-[calc(100vw-1.5rem)] sm:max-w-sm rounded-2xl p-4 sm:p-6 border shadow-2xl relative flex flex-col justify-between mb-4 sm:mb-0 ${
               isDark 
                 ? "bg-stone-900/95 border-[#f0bf5c]/30 text-white backdrop-blur-md" 
                 : "bg-white/95 border-stone-200 text-stone-800 backdrop-blur-md"
@@ -232,7 +319,7 @@ export default function TutorialGuide({
             <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#c89b3c] via-[#f0bf5c] to-purple-500 rounded-t-2xl" />
 
             {/* Header section with step indicators */}
-            <div className="flex items-center justify-between mb-4 mt-2">
+            <div className="flex items-center justify-between mb-3 sm:mb-4 mt-2">
               <span className={`text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${
                 isDark ? "bg-[#f0bf5c]/15 text-[#f0bf5c]" : "bg-[#c89b3c]/15 text-[#c89b3c]"
               }`}>
@@ -249,13 +336,29 @@ export default function TutorialGuide({
               </button>
             </div>
 
+            {/* Step progress dots for mobile */}
+            <div className="flex items-center justify-center gap-1.5 mb-3 sm:hidden">
+              {tourSteps.map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`h-1.5 rounded-full transition-all duration-300 ${
+                    idx === currentStep 
+                      ? "w-6 bg-[#f0bf5c]" 
+                      : idx < currentStep 
+                        ? "w-1.5 bg-[#f0bf5c]/50" 
+                        : "w-1.5 bg-stone-600"
+                  }`}
+                />
+              ))}
+            </div>
+
             {/* Core Tour Details */}
-            <div className="space-y-3 mb-6">
+            <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6">
               <div className="flex items-center gap-2.5">
-                <div className={`p-1.5 rounded-lg ${isDark ? "bg-[#f0bf5c]/10" : "bg-[#c89b3c]/10"}`}>
+                <div className={`p-1.5 rounded-lg shrink-0 ${isDark ? "bg-[#f0bf5c]/10" : "bg-[#c89b3c]/10"}`}>
                   {currentStepData.icon}
                 </div>
-                <h4 className="font-display font-bold text-[15px] tracking-tight">{currentStepData.title}</h4>
+                <h4 className="font-display font-bold text-sm sm:text-[15px] tracking-tight">{currentStepData.title}</h4>
               </div>
 
               <p className={`text-xs leading-relaxed ${isDark ? "text-stone-300" : "text-stone-600"}`}>

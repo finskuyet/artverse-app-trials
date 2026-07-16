@@ -146,6 +146,14 @@ export default function App() {
       console.error("Failed to emit mock notification:", err);
     }
   };
+  useEffect(() => {
+    if (activeToast) {
+      const timer = setTimeout(() => {
+        setActiveToast(null);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [activeToast]);
 
   return (
     <div className={`min-h-screen font-sans antialiased flex flex-col justify-between selection:bg-[#f0bf5c] selection:text-[#412d00] transition-colors duration-300 ${

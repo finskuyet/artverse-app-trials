@@ -359,6 +359,93 @@ export default function SellerPortal({
     }
   };
 
+  // Clear all sold artworks
+  const handleClearSoldArtworks = async () => {
+    if (!window.confirm("Apakah Anda yakin ingin menghapus semua karya seni yang telah terjual? Aksi ini tidak dapat dibatalkan.")) return;
+    try {
+      const res = await fetch("/api/artworks/sold", {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        loadDashboardData();
+      }
+    } catch (err) {
+      console.error("Clear sold artworks failed", err);
+    }
+  };
+
+  // Reset Omset (delete all paid orders)
+  const handleResetOmset = async () => {
+    if (!window.confirm("Apakah Anda yakin ingin mereset omset? Ini akan menghapus semua riwayat pesanan yang sudah lunas (Dibayar). Aksi ini permanen.")) return;
+    try {
+      const res = await fetch("/api/orders/paid", {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        loadDashboardData();
+      } else {
+        const data = await res.json();
+        window.alert(data.error || "Gagal mereset omset");
+      }
+    } catch (err) {
+      console.error("Reset omset failed", err);
+      window.alert("Terjadi kesalahan jaringan.");
+    }
+  };
+
+  // Delete an incoming order
+  const handleDeleteOrder = async (orderId: string) => {
+    if (!window.confirm(`Hapus pesanan dengan ID ${orderId}? Aksi ini permanen.`)) return;
+    try {
+      const res = await fetch(`/api/orders/${orderId}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        loadDashboardData();
+      } else {
+        const data = await res.json();
+        window.alert(data.error || "Gagal menghapus pesanan");
+      }
+    } catch (err) {
+      console.error("Delete order failed", err);
+      window.alert("Terjadi kesalahan jaringan.");
+    }
+  };
+
+  // Export orders to CSV
+  const handleExportOrdersCSV = () => {
+    if (orders.length === 0) return;
+    const headers = ["ID Pesanan", "Tanggal", "Nama Pembeli", "Email", "Telepon", "Alamat", "Karya", "Total (Rp)", "Status", "No. Resi", "Kurir"];
+    
+    const rows = orders.map(o => {
+      const date = new Date(o.date).toLocaleDateString("id-ID");
+      const items = o.items.map(i => i.title).join(" | ");
+      return [
+        o.id,
+        date,
+        `"${o.buyerName}"`,
+        o.email,
+        o.phone,
+        `"${o.address}, ${o.city} ${o.postalCode}"`,
+        `"${items}"`,
+        o.totalPrice,
+        o.status,
+        o.shippingReceipt || "-",
+        o.courier || "-"
+      ].join(",");
+    });
+
+    const csvContent = [headers.join(","), ...rows].join("\n");
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `riwayat-pesanan-artverse-${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   // Quick edit artwork status directly from catalog table
   const handleUpdateArtworkStatus = async (artId: string, newStatus: string) => {
     try {
@@ -749,34 +836,61 @@ export default function SellerPortal({
 
           {/* Quick Info & Sold Painting Grid of main sales (Hasil lukisan yang dijual penjual) */}
           <div className={`rounded-xl p-6 md:p-8 ${isDark ? "glass-panel" : "bg-white border border-stone-200 shadow-sm"}`}>
-            <div className={`flex justify-between items-center mb-6 pb-4 border-b ${
+            <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b ${
               isDark ? "border-[#f0bf5c]/10" : "border-stone-200"
             }`}>
-              <h2 className={`font-display text-lg font-bold flex items-center gap-2 ${isDark ? "text-white" : "text-stone-900"}`}>
-                <Sparkles className={isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"} size={16} />
-                <span>Galeri Utama Karya yang Terjual (Sales Gallery)</span>
-              </h2>
-              <span className={`text-[10px] font-bold uppercase tracking-wider border px-2.5 py-1 rounded ${
-                isDark 
-                  ? "text-emerald-400 bg-emerald-950/40 border-emerald-500/20" 
-                  : "text-emerald-700 bg-emerald-50 border-emerald-200"
-              }`}>
-                Verified Sales
-              </span>
+              <div className="flex flex-col gap-1">
+                <h2 className={`font-display text-lg font-bold flex items-center gap-2 ${isDark ? "text-white" : "text-stone-900"}`}>
+                  <Sparkles className={isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"} size={16} />
+                  <span>Galeri Utama Karya yang Terjual (Sales Gallery)</span>
+                </h2>
+                <span className={`text-[10px] font-bold uppercase tracking-wider border px-2.5 py-0.5 rounded self-start ${
+                  isDark 
+                    ? "text-emerald-400 bg-emerald-950/40 border-emerald-500/20" 
+                    : "text-emerald-700 bg-emerald-50 border-emerald-200"
+                }`}>
+                  Verified Sales
+                </span>
+              </div>
+              <div className="flex items-center gap-2 self-end md:self-auto">
+                <button
+                  onClick={handleResetOmset}
+                  className={`font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer px-3 py-1.5 rounded border ${
+                    isDark 
+                      ? "bg-[#1f1b14] border-red-500/30 text-red-400 hover:bg-red-500/10" 
+                      : "bg-white border-red-200 text-red-600 hover:bg-red-50"
+                  }`}
+                  title="Hapus semua pesanan yang telah lunas"
+                >
+                  <RefreshCw size={12} />
+                  <span>Reset Omset</span>
+                </button>
+                <button
+                  onClick={handleClearSoldArtworks}
+                  className={`font-bold text-[10px] uppercase tracking-wider flex items-center gap-1.5 transition-all cursor-pointer px-3 py-1.5 rounded border ${
+                    isDark 
+                      ? "bg-[#1f1b14] border-red-500/30 text-red-400 hover:bg-red-500/10" 
+                      : "bg-white border-red-200 text-red-600 hover:bg-red-50"
+                  }`}
+                  title="Hapus semua karya seni berstatus Terjual"
+                >
+                  <Trash2 size={12} />
+                  <span>Hapus Lukisan Terjual</span>
+                </button>
+              </div>
             </div>
 
-            {orders.filter((o) => o.status === "Dibayar").length === 0 ? (
+            {artworks.filter((a) => a.status === "Terjual").length === 0 ? (
               <div className={`py-16 text-center text-xs ${isDark ? "text-[#d2c5b1]/60" : "text-stone-400"}`}>
-                Belum ada transaksi pembayaran lunas.
+                Belum ada karya seni yang terjual di galeri.
               </div>
             ) : (
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-                {orders
-                  .filter((o) => o.status === "Dibayar")
-                  .flatMap((o) => o.items)
-                  .map((item, index) => (
+                {artworks
+                  .filter((a) => a.status === "Terjual")
+                  .map((item) => (
                     <div
-                      key={index}
+                      key={item.id}
                       className={`rounded-lg overflow-hidden flex flex-col transition-colors border ${
                         isDark 
                           ? "bg-[#110e08]/60 border-[#f0bf5c]/15 hover:border-[#f0bf5c]/35" 
@@ -817,17 +931,30 @@ export default function SellerPortal({
             isDark ? "border-[#f0bf5c]/10 bg-[#1f1b14]/50" : "border-stone-200 bg-stone-50"
           }`}>
             <h2 className={`font-display text-lg font-bold ${isDark ? "text-white" : "text-stone-900"}`}>Daftar Katalog Karya Seni</h2>
-            <button
-              onClick={() => setActiveTab("upload")}
-              className={`font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer px-4 py-2 rounded ${
-                isDark 
-                  ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" 
-                  : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
-              }`}
-            >
-              <Plus size={14} />
-              <span>Tambah Baru</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleClearSoldArtworks}
+                className={`font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer px-3 py-2 rounded border ${
+                  isDark 
+                    ? "bg-[#1f1b14] border-red-500/30 text-red-400 hover:bg-red-500/10" 
+                    : "bg-white border-red-200 text-red-600 hover:bg-red-50"
+                }`}
+              >
+                <Trash2 size={14} />
+                <span>Bersihkan Karya Terjual</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("upload")}
+                className={`font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer px-4 py-2 rounded ${
+                  isDark 
+                    ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" 
+                    : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
+                }`}
+              >
+                <Plus size={14} />
+                <span>Tambah Baru</span>
+              </button>
+            </div>
           </div>
 
           <div className="overflow-x-auto custom-scrollbar">
@@ -1174,6 +1301,17 @@ export default function SellerPortal({
                 Real-time Sync
               </span>
             </h2>
+            <button
+              onClick={handleExportOrdersCSV}
+              className={`font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer px-4 py-2 rounded ${
+                isDark 
+                  ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" 
+                  : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
+              }`}
+            >
+              <RefreshCw size={14} className="transform rotate-180" />
+              <span>Unduh Data (CSV)</span>
+            </button>
           </div>
 
           {orders.length === 0 ? (
@@ -1197,6 +1335,7 @@ export default function SellerPortal({
                     <th className="p-4">Kuitansi Bukti</th>
                     <th className="p-4">Status &amp; Verifikasi</th>
                     <th className="p-4">Pengiriman (No. Resi)</th>
+                    <th className="p-4 text-center">Aksi</th>
                   </tr>
                 </thead>
                 <tbody className={`divide-y ${
@@ -1374,6 +1513,17 @@ export default function SellerPortal({
                           </span>
                         )}
                       </td>
+                      <td className="p-4 text-center">
+                        <button
+                          onClick={() => handleDeleteOrder(o.id)}
+                          className={`p-1.5 rounded hover:bg-red-500/10 transition-colors ${
+                            isDark ? "text-[#9b8f7d] hover:text-red-400" : "text-stone-400 hover:text-red-600"
+                          }`}
+                          title="Hapus Pesanan"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -1502,7 +1652,6 @@ export default function SellerPortal({
                       <p className="whitespace-pre-wrap">{m.replyText}</p>
                     </div>
                   )}
-
                   {/* Reply Form */}
                   {replyingMessageId === m.id && (
                     <div className={`p-4 border rounded-lg ml-4 space-y-3 ${

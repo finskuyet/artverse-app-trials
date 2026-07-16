@@ -243,6 +243,7 @@ export default function Navbar({
             : "bg-white border-stone-200 shadow-lg"
         }`}>
           <button
+            id="nav-guide-mobile"
             onClick={() => {
               onOpenTutorial();
               setMobileMenuOpen(false);
@@ -255,6 +256,7 @@ export default function Navbar({
             <span>✨ Panduan Interaktif</span>
           </button>
           <button
+            id="nav-gallery-mobile"
             onClick={() => {
               setActiveView("gallery");
               setMobileMenuOpen(false);
@@ -268,6 +270,7 @@ export default function Navbar({
             <span>🎨 Galeri Seni</span>
           </button>
           <button
+            id="nav-cart-mobile"
             onClick={() => {
               setActiveView("cart");
               setMobileMenuOpen(false);
@@ -281,6 +284,7 @@ export default function Navbar({
             <span>🛒 Keranjang ({cartCount})</span>
           </button>
           <button
+            id="nav-transactions-mobile"
             onClick={() => {
               setActiveView("transactions");
               setMobileMenuOpen(false);
@@ -294,6 +298,7 @@ export default function Navbar({
             <span>📦 Transaksi Saya</span>
           </button>
           <button
+            id="nav-seller-mobile"
             onClick={() => {
               setActiveView("seller");
               setMobileMenuOpen(false);
