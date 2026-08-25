@@ -226,41 +226,34 @@ export default function TutorialGuide({
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[100] overflow-hidden">
-        {/* Semi-transparent dark overlay */}
+        {/* Transparent overlay to capture clicks */}
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
           onClick={handleSkip}
-          className="fixed inset-0 bg-black/75 backdrop-blur-xs cursor-pointer"
+          className="fixed inset-0 cursor-pointer z-[100]"
         />
 
         {/* Real-time Target Highlight Spotlight & Circling Rings */}
         {targetRect && (
           <div className="fixed inset-0 pointer-events-none z-[110]">
-            {/* Spotlight Glow Border circling the button */}
+            {/* Spotlight Glow Border with Hole-Punch Shadow */}
             <motion.div
               key={`spotlight-${currentStep}`}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
               transition={{ type: "spring", stiffness: 150, damping: 20 }}
-              className="fixed border-2 border-[#f0bf5c] rounded-full shadow-[0_0_30px_rgba(240,191,92,0.8)]"
+              className="fixed rounded-full"
               style={{
                 top: targetRect.top - 6,
                 left: targetRect.left - 6,
                 width: targetRect.width + 12,
                 height: targetRect.height + 12,
+                // Hole punch trick: massive box-shadow darkens everything EXCEPT inside the ring
+                boxShadow: "0 0 0 2px #f0bf5c, 0 0 0 9999px rgba(0,0,0,0.75)",
               }}
             >
               {/* Infinite concentric ripple effect */}
               <div className="absolute -inset-3 border-2 border-[#f0bf5c]/40 rounded-full animate-ping opacity-60" />
-
-              {/* Cloned text/icon inside the spotlight so it's clearly visible and not blurred */}
-              <div 
-                className="absolute inset-0 flex items-center justify-center gap-2 font-semibold text-sm whitespace-nowrap text-[#f0bf5c] drop-shadow-md"
-                dangerouslySetInnerHTML={{ __html: targetHtml }}
-              />
             </motion.div>
 
             {/* Bouncing Pointer Arrow with tooltip */}
