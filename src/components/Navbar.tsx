@@ -1,5 +1,5 @@
 import { ShoppingCart, Compass, FileText, Lock, Menu, Bell, Sun, Moon, HelpCircle } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Notification } from "../types";
 
 interface NavbarProps {
@@ -26,6 +26,30 @@ export default function Navbar({
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+  // Secret tap feature
+  const [secretTapCount, setSecretTapCount] = useState(0);
+
+  useEffect(() => {
+    if (secretTapCount > 0) {
+      const timer = setTimeout(() => setSecretTapCount(0), 1500); // 1.5 detik timeout
+      return () => clearTimeout(timer);
+    }
+  }, [secretTapCount]);
+
+  const handleLogoClick = () => {
+    setActiveView("gallery");
+    setMobileMenuOpen(false);
+    
+    setSecretTapCount(prev => {
+      const newCount = prev + 1;
+      if (newCount >= 5) { // 5x ketuk
+        setActiveView("seller");
+        return 0;
+      }
+      return newCount;
+    });
+  };
+
   const isDark = theme === "dark";
 
   return (
@@ -37,10 +61,7 @@ export default function Navbar({
       <div className="flex justify-between items-center px-6 md:px-12 h-20 w-full max-w-7xl mx-auto">
         {/* Brand Logo */}
         <div
-          onClick={() => {
-            setActiveView("gallery");
-            setMobileMenuOpen(false);
-          }}
+          onClick={handleLogoClick}
           className={`font-display text-2xl font-bold tracking-widest cursor-pointer select-none transition-colors ${
             isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"
           }`}
