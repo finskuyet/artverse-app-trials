@@ -59,13 +59,6 @@ export default function TutorialGuide({
       tooltip: "Lacak Transaksi & Pengiriman"
     },
     {
-      targetId: "nav-seller",
-      title: "Portal Seniman / Penjual 🧑‍🎨",
-      description: "Ingin menjual karya seni Anda? Masuk ke portal ini untuk mengunggah gambar lukisan, mengatur harga, menulis kisah di balik lukisan, dan memantau pendapatan galeri pribadi Anda.",
-      icon: <Sparkles className="w-5 h-5 text-purple-400" />,
-      tooltip: "Mulai Jual Mahakarya Anda"
-    },
-    {
       targetId: "nav-bell",
       title: "Live Notifikasi & Aktivitas 🔔",
       description: "Dapatkan pembaruan langsung tentang status penawaran harga, pesanan baru dari kolektor, maupun pesan chat terbaru dalam sekejap.",
