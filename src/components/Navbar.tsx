@@ -247,6 +247,7 @@ export default function Navbar({
 
           {/* Hamburger Mobile Menu */}
           <button
+            id="nav-hamburger"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`md:hidden p-1.5 border rounded-md transition-colors cursor-pointer ${
               isDark 

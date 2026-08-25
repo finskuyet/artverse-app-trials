@@ -13,7 +13,8 @@ import {
   Sun,
   Moon,
   ArrowUp,
-  ArrowDown
+  ArrowDown,
+  Menu
 } from "lucide-react";
 
 interface TutorialGuideProps {
@@ -36,7 +37,7 @@ export default function TutorialGuide({
   const [isMobileView, setIsMobileView] = useState(false);
 
   // Configuration of all steps for the Guided Tour
-  const tourSteps = [
+  const baseTourSteps = [
     {
       targetId: "nav-gallery",
       title: "Jelajahi Galeri Seni 🎨",
@@ -80,6 +81,19 @@ export default function TutorialGuide({
       tooltip: "Buka Kembali Tour Kapan Saja"
     }
   ];
+
+  const tourSteps = isMobileView 
+    ? [
+        {
+          targetId: "nav-hamburger",
+          title: "Menu Navigasi 📱",
+          description: "Di layar handphone, ketuk tombol garis tiga ini untuk memunculkan menu akses ke Galeri Seni, Keranjang Belanja, dan Riwayat Transaksi Anda.",
+          icon: <Menu className="w-5 h-5 text-[#f0bf5c]" />,
+          tooltip: "Buka Menu Utama"
+        },
+        ...baseTourSteps.filter(s => !["nav-gallery", "nav-cart", "nav-transactions", "nav-guide"].includes(s.targetId))
+      ]
+    : baseTourSteps;
 
   // Find target element: try desktop ID first, then mobile fallback
   const findTargetElement = useCallback((targetId: string): HTMLElement | null => {
