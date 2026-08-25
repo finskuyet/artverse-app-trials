@@ -81,7 +81,7 @@ export default function Navbar({
             }`}
           >
             <Compass size={16} />
-            <span>🎨 Galeri Seni</span>
+            <span>Galeri Seni</span>
           </button>
 
           <button
@@ -94,7 +94,7 @@ export default function Navbar({
             }`}
           >
             <ShoppingCart size={16} />
-            <span>🛒 Keranjang</span>
+            <span>Keranjang</span>
             {cartCount > 0 && (
               <span
                 className={`ml-1 px-1.5 py-0.5 text-xs font-bold rounded-full ${
@@ -118,7 +118,7 @@ export default function Navbar({
             }`}
           >
             <FileText size={16} />
-            <span>📦 Transaksi Saya</span>
+            <span>Transaksi Saya</span>
           </button>
         </div>
 
@@ -277,7 +277,7 @@ export default function Navbar({
             }`}
           >
             <HelpCircle size={16} />
-            <span>✨ Panduan Interaktif</span>
+            <span>Panduan Interaktif</span>
           </button>
           <button
             id="nav-gallery-mobile"
@@ -291,7 +291,7 @@ export default function Navbar({
                 : (isDark ? "text-[#ebe1d6]" : "text-stone-600")
             }`}
           >
-            <span>🎨 Galeri Seni</span>
+            <span>Galeri Seni</span>
           </button>
           <button
             id="nav-cart-mobile"
@@ -305,7 +305,7 @@ export default function Navbar({
                 : (isDark ? "text-[#ebe1d6]" : "text-stone-600")
             }`}
           >
-            <span>🛒 Keranjang ({cartCount})</span>
+            <span>Keranjang ({cartCount})</span>
           </button>
           <button
             id="nav-transactions-mobile"
@@ -319,7 +319,7 @@ export default function Navbar({
                 : (isDark ? "text-[#ebe1d6]" : "text-stone-600")
             }`}
           >
-            <span>📦 Transaksi Saya</span>
+            <span>Transaksi Saya</span>
           </button>
           {false && (
           <button
