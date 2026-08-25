@@ -1,4 +1,5 @@
 import { Camera, Mail } from "lucide-react";
+import { useState, useEffect } from "react";
 
 interface FooterProps {
   theme?: "dark" | "light";
@@ -7,6 +8,47 @@ interface FooterProps {
 
 export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) {
   const isDark = theme === "dark";
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [contactEmail, setContactEmail] = useState("inquire@artverse.com");
+
+  useEffect(() => {
+    // Fetch global payment settings to get the dynamic contact email
+    fetch("/api/payment-settings")
+      .then(res => res.json())
+      .then(data => {
+        if (data && data.contactEmail) {
+          setContactEmail(data.contactEmail);
+        }
+      })
+      .catch(err => console.error("Error loading contact email:", err));
+  }, []);
+
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !email.includes("@")) return;
+
+    setStatus("loading");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      if (res.ok) {
+        setStatus("success");
+        setEmail("");
+        setTimeout(() => setStatus("idle"), 3000);
+      } else {
+        setStatus("error");
+        setTimeout(() => setStatus("idle"), 3000);
+      }
+    } catch (error) {
+      console.error("Failed to subscribe:", error);
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 3000);
+    }
+  };
 
   return (
     <footer id="main-footer" className={`w-full pt-16 pb-10 border-t transition-colors duration-300 ${
@@ -92,22 +134,36 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
           <p className={`text-sm mb-4 ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
             Dapatkan info pameran eksklusif langsung di email Anda.
           </p>
-          <div className="flex gap-2">
+          <form onSubmit={handleSubscribe} className="flex gap-2">
             <input
               type="email"
               placeholder="Email Anda"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={status === "loading" || status === "success"}
               className={`border rounded-lg px-4 py-2 flex-1 outline-none text-sm transition-all ${
                 isDark 
                   ? "bg-[#1f1b14] border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
                   : "bg-white border-stone-300 focus:border-[#c89b3c] text-stone-900"
-              }`}
+              } ${(status === "loading" || status === "success") ? "opacity-70" : ""}`}
             />
-            <button className={`px-4 py-2 rounded-lg font-bold text-sm transition-all hover:scale-105 active:scale-95 cursor-pointer ${
-              isDark ? "bg-[#f0bf5c] text-[#412d00]" : "bg-[#c89b3c] text-white"
-            }`}>
-              Daftar
+            <button 
+              type="submit"
+              disabled={status === "loading" || status === "success"}
+              className={`px-4 py-2 rounded-lg font-bold text-sm transition-all cursor-pointer ${
+                status === "success" 
+                  ? "bg-emerald-500 text-white" 
+                  : status === "error"
+                    ? "bg-red-500 text-white"
+                    : isDark 
+                      ? "bg-[#f0bf5c] text-[#412d00] hover:scale-105 active:scale-95" 
+                      : "bg-[#c89b3c] text-white hover:scale-105 active:scale-95"
+              }`}
+            >
+              {status === "loading" ? "..." : status === "success" ? "Berhasil!" : status === "error" ? "Gagal" : "Daftar"}
             </button>
-          </div>
+          </form>
         </div>
       </div>
       <div className={`max-w-7xl mx-auto px-6 md:px-12 mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-xs ${
@@ -124,9 +180,9 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
             <Camera size={16} />
             <span>@artverse.gallery</span>
           </a>
-          <a href="#" className={`transition-colors flex items-center gap-1 ${isDark ? "hover:text-[#f0bf5c]" : "hover:text-[#c89b3c]"}`}>
+          <a href={`mailto:${contactEmail}`} className={`transition-colors flex items-center gap-1 ${isDark ? "hover:text-[#f0bf5c]" : "hover:text-[#c89b3c]"}`}>
             <Mail size={16} />
-            <span>inquire@artverse.com</span>
+            <span>{contactEmail}</span>
           </a>
         </div>
       </div>

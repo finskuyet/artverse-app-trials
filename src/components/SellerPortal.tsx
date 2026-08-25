@@ -34,7 +34,7 @@ export default function SellerPortal({
   const [loginError, setLoginError] = useState("");
 
   // Dashboard state
-  const [activeTab, setActiveTab] = useState<"summary" | "catalog" | "upload" | "orders" | "messages" | "settings">("summary");
+  const [activeTab, setActiveTab] = useState<"summary" | "catalog" | "upload" | "orders" | "messages" | "settings" | "newsletter">("summary");
   const [stats, setStats] = useState({
     activeArtworksCount: 0,
     availableCount: 0,
@@ -46,6 +46,7 @@ export default function SellerPortal({
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [newsletterSubs, setNewsletterSubs] = useState<{email: string, date: string}[]>([]);
   const [loading, setLoading] = useState(false);
 
   // Upload Form state
@@ -89,6 +90,7 @@ export default function SellerPortal({
   const [bank2Owner, setBank2Owner] = useState("");
   const [qrisImage, setQrisImage] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
+  const [contactEmail, setContactEmail] = useState("inquire@artverse.com");
   const [settingsSuccess, setSettingsSuccess] = useState(false);
   const [settingsError, setSettingsError] = useState("");
   const [savingSettings, setSavingSettings] = useState(false);
@@ -110,6 +112,7 @@ export default function SellerPortal({
         setBank2Owner(data.bank2Owner || "");
         setQrisImage(data.qrisImage || "");
         setWhatsappNumber(data.whatsappNumber || "");
+        if (data.contactEmail) setContactEmail(data.contactEmail);
       }
     } catch (err) {
       console.error("Error loading payment settings:", err);
@@ -121,22 +124,25 @@ export default function SellerPortal({
   const loadDashboardData = async (silent: boolean = false) => {
     try {
       if (!silent) setLoading(true);
-      const [statsRes, artRes, ordersRes, msgRes] = await Promise.all([
+      const [statsRes, artRes, ordersRes, msgRes, newsRes] = await Promise.all([
         fetch("/api/stats"),
         fetch("/api/artworks"),
         fetch("/api/orders"),
         fetch("/api/messages"),
+        fetch("/api/newsletter"),
       ]);
 
       const statsData = await statsRes.json();
       const artData = await artRes.json();
       const ordersData = await ordersRes.json();
       const msgData = await msgRes.json();
+      const newsData = await newsRes.json();
 
       setStats(statsData);
       setArtworks(artData);
       setOrders(ordersData);
       setMessages(msgData);
+      setNewsletterSubs(Array.isArray(newsData) ? newsData : []);
     } catch (error) {
       console.error("Error loading dashboard data", error);
     } finally {
@@ -499,6 +505,7 @@ export default function SellerPortal({
           bank2Owner,
           qrisImage,
           whatsappNumber,
+          contactEmail,
         }),
       });
 
@@ -740,6 +747,21 @@ export default function SellerPortal({
           }`}
         >
           ✉️ Pesan Masuk ({messages.length})
+        </button>
+
+        <button
+          onClick={() => setActiveTab("newsletter")}
+          className={`px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all border ${
+            activeTab === "newsletter"
+              ? isDark 
+                ? "bg-[#f0bf5c]/10 text-[#f0bf5c] border-[#f0bf5c]/30"
+                : "bg-[#c89b3c]/10 text-[#c89b3c] border-[#c89b3c]/30"
+              : isDark 
+                ? "text-[#d2c5b1] hover:text-[#f0bf5c] hover:bg-[#ebe1d6]/5 border-transparent"
+                : "text-stone-600 hover:text-stone-950 hover:bg-stone-100 border-transparent"
+          }`}
+        >
+          📬 Buletin ({newsletterSubs.length})
         </button>
 
         <button
@@ -1713,6 +1735,84 @@ export default function SellerPortal({
         </div>
       )}
 
+      {/* Tab Newsletter */}
+      {activeTab === "newsletter" && (
+        <div className="space-y-8 animate-in fade-in duration-300">
+          <div className={`p-6 rounded-xl border shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${
+            isDark ? "glass-panel" : "bg-white border border-stone-200"
+          }`}>
+            <div>
+              <h2 className={`font-display text-lg font-bold mb-1 flex items-center gap-2 ${
+                isDark ? "text-white" : "text-stone-900"
+              }`}>
+                📬 Pelanggan Buletin Seni
+              </h2>
+              <p className={`text-xs ${isDark ? "text-[#d2c5b1]/70" : "text-stone-500"}`}>
+                Daftar {newsletterSubs.length} email pengunjung yang telah mendaftar. Anda bisa mengirim broadcast ke semuanya sekaligus.
+              </p>
+            </div>
+            {newsletterSubs.length > 0 && (
+              <a
+                href={`mailto:?bcc=${newsletterSubs.map(s => s.email).join(",")}&subject=Pembaruan%20Katalog%20Artverse&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-md cursor-pointer ${
+                  isDark 
+                    ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" 
+                    : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
+                }`}
+              >
+                <Mail size={14} />
+                <span>Kirim Broadcast ke Semua (BCC)</span>
+              </a>
+            )}
+          </div>
+
+          {newsletterSubs.length === 0 ? (
+            <div className={`p-10 rounded-xl text-center border ${isDark ? "bg-[#110e08]/60 border-[#4e4637]/30 text-stone-500" : "bg-stone-50 border-stone-200 text-stone-400"}`}>
+              <Mail size={40} className="mx-auto mb-4 opacity-50" />
+              <h3 className="font-bold text-sm uppercase tracking-wider mb-2">Belum ada pelanggan</h3>
+              <p className="text-xs">Email yang didaftarkan melalui footer akan muncul di sini.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-3">
+              {newsletterSubs.map((sub, idx) => (
+                <div key={idx} className={`p-4 rounded-xl border flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${
+                  isDark 
+                    ? "bg-[#1f1b14] border-[#4e4637]/30 hover:border-[#f0bf5c]/30" 
+                    : "bg-white border-stone-200 hover:border-[#c89b3c]/30"
+                }`}>
+                  <div className="flex flex-col gap-1">
+                    <span className={`font-bold font-sans text-sm ${isDark ? "text-white" : "text-stone-900"}`}>
+                      {sub.email}
+                    </span>
+                    <span className={`text-[10px] uppercase tracking-wider font-bold flex items-center gap-1 ${isDark ? "text-stone-500" : "text-stone-400"}`}>
+                      Mendaftar Pada: {new Date(sub.date).toLocaleDateString("id-ID", {
+                        day: "numeric", month: "short", year: "numeric"
+                      })}
+                    </span>
+                  </div>
+                  <button
+                    onClick={async () => {
+                      if (!window.confirm(`Hapus ${sub.email} dari daftar buletin?`)) return;
+                      await fetch(`/api/newsletter/${encodeURIComponent(sub.email)}`, { method: "DELETE" });
+                      loadDashboardData(true);
+                    }}
+                    className={`p-2 rounded text-xs font-bold uppercase tracking-wider flex items-center gap-1 transition-colors cursor-pointer border ${
+                      isDark 
+                        ? "border-red-500/10 text-red-400 hover:bg-red-500/10" 
+                        : "border-red-200 text-red-500 hover:bg-red-50"
+                    }`}
+                  >
+                    <Trash2 size={12} /> Hapus
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       {/* Tab 6: Settings */}
       {activeTab === "settings" && (
         <div className="space-y-8 animate-in fade-in duration-300">
@@ -2005,6 +2105,37 @@ export default function SellerPortal({
                   />
                   <p className={`text-[10px] leading-relaxed italic ${isDark ? "text-[#9b8f7d]" : "text-stone-400"}`}>
                     * Masukkan nomor WhatsApp aktif Anda (contoh: 081234567890). Pembeli di Galeri Utama akan diarahkan ke chat WhatsApp ini untuk bertanya seputar karya seni atau melakukan konfirmasi pembayaran.
+                  </p>
+                </div>
+              </div>
+
+              {/* Contact Email Config */}
+              <div className={`p-4 rounded-lg border space-y-4 ${
+                isDark ? "bg-[#110e08] border-[#4e4637]/30" : "bg-stone-50 border-stone-200"
+              }`}>
+                <h3 className={`font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 ${isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"}`}>
+                  <span>📧 Alamat Email Kontak Galeri</span>
+                </h3>
+
+                <div className="space-y-2">
+                  <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                    Email Galeri Publik *
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={contactEmail}
+                    onChange={(e) => setContactEmail(e.target.value)}
+                    placeholder="Contoh: inquire@artverse.com"
+                    className={`w-full rounded-lg p-3 text-xs outline-none transition-all ${
+                      isDark 
+                        ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                        : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                    }`}
+                  />
+                  <p className={`text-[10px] leading-relaxed italic ${isDark ? "text-[#9b8f7d]" : "text-stone-400"}`}>
+                    * Alamat email ini akan ditampilkan secara publik di bagian bawah situs (Footer). 
+                    Ini adalah kontak resmi galeri Anda untuk menerima pertanyaan via email dari kolektor seni.
                   </p>
                 </div>
               </div>

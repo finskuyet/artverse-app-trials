@@ -58,6 +58,11 @@ export interface Message {
   repliedAt?: string;
 }
 
+export interface NewsletterSubscriber {
+  email: string;
+  date: string;
+}
+
 export interface Notification {
   id: string;
   date: string;
@@ -75,6 +80,7 @@ export interface PaymentSettings {
   bank2Owner: string;
   qrisImage: string;
   whatsappNumber?: string;
+  contactEmail?: string;
 }
 
 // Supabase client initialization
@@ -214,10 +220,10 @@ const defaultPaymentSettings: PaymentSettings = {
   bank2Number: "987-654-3210",
   bank2Owner: "Galeri Pratama",
   qrisImage: "https://lh3.googleusercontent.com/aida/AP1WRLvtjN7SIYTNoGyPxtES-aFpY9Ogo35dMBFSz8oAngHSTYPhWB0LsgeQOdporsqBp_Y003JG8r5xqeqYZV2s-ysxV5OLZBretXLrSYwMZEst7UqtpnGHG-1oaW-MoP9l7XA45T1g4I0DRZQevTLCWnhEgla_n7_UYZl1WZZvZPMnmgYbt9H5afXjQeHFDlU_O0liKaVZ4Ge_tZOMU2Yzcu7O-__Xl-7trrjyccQU8OW3XrZaYCwQshs_FZDk",
-  whatsappNumber: "6281234567890"
+  whatsappNumber: "6281234567890",
+  contactEmail: "inquire@artverse.com"
 };
 
-// Local JSON Database Operations
 function loadLocalDb() {
   if (!fs.existsSync(DB_FILE)) {
     const db = {
@@ -225,7 +231,8 @@ function loadLocalDb() {
       orders: defaultOrders,
       messages: [],
       notifications: [],
-      paymentSettings: defaultPaymentSettings
+      paymentSettings: defaultPaymentSettings,
+      newsletter: []
     };
     fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), "utf8");
     return db;
@@ -233,6 +240,7 @@ function loadLocalDb() {
   try {
     const data = JSON.parse(fs.readFileSync(DB_FILE, "utf8"));
     if (!data.paymentSettings) data.paymentSettings = defaultPaymentSettings;
+    if (!data.newsletter) data.newsletter = [];
     return data;
   } catch (err) {
     console.error("Error reading JSON db, using empty fields:", err);
@@ -241,7 +249,8 @@ function loadLocalDb() {
       orders: [],
       messages: [],
       notifications: [],
-      paymentSettings: defaultPaymentSettings
+      paymentSettings: defaultPaymentSettings,
+      newsletter: []
     };
   }
 }
@@ -631,5 +640,61 @@ export const dbRepository = {
     db.paymentSettings = settings;
     saveLocalDb(db);
     return settings;
+  },
+
+  // Newsletter
+  getNewsletterSubscribers: async (): Promise<NewsletterSubscriber[]> => {
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("newsletter")
+        .select("*")
+        .order("date", { ascending: false });
+      if (error) {
+        console.error("Supabase getNewsletterSubscribers error:", error);
+      } else if (data) {
+        return data as NewsletterSubscriber[];
+      }
+    }
+    return loadLocalDb().newsletter || [];
+  },
+
+  addNewsletterSubscriber: async (subscriber: NewsletterSubscriber): Promise<NewsletterSubscriber> => {
+    if (supabase) {
+      const { data, error } = await supabase
+        .from("newsletter")
+        .insert([subscriber])
+        .select()
+        .single();
+      if (error) {
+        console.error("Supabase addNewsletterSubscriber error:", error);
+      } else if (data) {
+        return data as NewsletterSubscriber;
+      }
+    }
+    const db = loadLocalDb();
+    if (!db.newsletter) db.newsletter = [];
+    
+    // Check if exists
+    if (!db.newsletter.some((sub: any) => sub.email === subscriber.email)) {
+      db.newsletter.unshift(subscriber);
+      saveLocalDb(db);
+    }
+    return subscriber;
+  },
+
+  deleteNewsletterSubscriber: async (email: string): Promise<boolean> => {
+    if (supabase) {
+      const { data, error } = await supabase.from("newsletter").delete().eq("email", email).select();
+      if (error) {
+        console.error("Supabase deleteNewsletterSubscriber error:", error);
+        return false;
+      }
+      return !!data && data.length > 0;
+    }
+    const db = loadLocalDb();
+    const len = db.newsletter.length;
+    db.newsletter = db.newsletter.filter((s: any) => s.email !== email);
+    saveLocalDb(db);
+    return db.newsletter.length < len;
   }
 };

@@ -478,7 +478,8 @@ app.put("/api/payment-settings", async (req, res) => {
     bank2Number, 
     bank2Owner, 
     qrisImage,
-    whatsappNumber
+    whatsappNumber,
+    contactEmail
   } = req.body;
   
   try {
@@ -491,7 +492,8 @@ app.put("/api/payment-settings", async (req, res) => {
       bank2Number: bank2Number || current.bank2Number || "",
       bank2Owner: bank2Owner || current.bank2Owner || "",
       qrisImage: qrisImage || current.qrisImage || "",
-      whatsappNumber: whatsappNumber !== undefined ? whatsappNumber : current.whatsappNumber || ""
+      whatsappNumber: whatsappNumber !== undefined ? whatsappNumber : current.whatsappNumber || "",
+      contactEmail: contactEmail !== undefined ? contactEmail : current.contactEmail || "inquire@artverse.com"
     };
 
     const saved = await dbRepository.updatePaymentSettings(updatedSettings);
@@ -499,6 +501,52 @@ app.put("/api/payment-settings", async (req, res) => {
   } catch (err) {
     console.error("Error updating payment settings:", err);
     res.status(500).json({ error: "Gagal menyimpan konfigurasi pembayaran" });
+  }
+});
+
+// 16. Get newsletter subscribers
+app.get("/api/newsletter", async (req, res) => {
+  try {
+    const subscribers = await dbRepository.getNewsletterSubscribers();
+    res.json(subscribers);
+  } catch (err) {
+    console.error("Error getting newsletter subscribers:", err);
+    res.status(500).json({ error: "Gagal memuat daftar pelanggan buletin" });
+  }
+});
+
+// 17. Subscribe to newsletter
+app.post("/api/newsletter", async (req, res) => {
+  const { email } = req.body;
+  if (!email || !email.includes("@")) {
+    return res.status(400).json({ error: "Email tidak valid" });
+  }
+  
+  try {
+    const added = await dbRepository.addNewsletterSubscriber({
+      email: email.toLowerCase().trim(),
+      date: new Date().toISOString()
+    });
+    res.status(201).json(added);
+  } catch (err) {
+    console.error("Error subscribing to newsletter:", err);
+    res.status(500).json({ error: "Gagal mendaftar buletin" });
+  }
+});
+
+// 18. Unsubscribe/Delete from newsletter
+app.delete("/api/newsletter/:email", async (req, res) => {
+  const { email } = req.params;
+  try {
+    const success = await dbRepository.deleteNewsletterSubscriber(decodeURIComponent(email));
+    if (success) {
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: "Email tidak ditemukan" });
+    }
+  } catch (err) {
+    console.error(`Error deleting newsletter subscriber ${email}:`, err);
+    res.status(500).json({ error: "Gagal menghapus pelanggan" });
   }
 });
 
