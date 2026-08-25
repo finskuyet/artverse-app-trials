@@ -32,6 +32,7 @@ export default function TutorialGuide({
   const isDark = theme === "dark";
   const [currentStep, setCurrentStep] = useState(0);
   const [targetRect, setTargetRect] = useState<{ top: number; left: number; width: number; height: number } | null>(null);
+  const [targetHtml, setTargetHtml] = useState<string>("");
   const [isMobileView, setIsMobileView] = useState(false);
 
   // Configuration of all steps for the Guided Tour
@@ -143,8 +144,10 @@ export default function TutorialGuide({
           width: rect.width,
           height: rect.height
         });
+        setTargetHtml(el.innerHTML);
       } else {
         setTargetRect(null);
+        setTargetHtml("");
       }
     };
 
@@ -252,6 +255,12 @@ export default function TutorialGuide({
             >
               {/* Infinite concentric ripple effect */}
               <div className="absolute -inset-3 border-2 border-[#f0bf5c]/40 rounded-full animate-ping opacity-60" />
+
+              {/* Cloned text/icon inside the spotlight so it's clearly visible and not blurred */}
+              <div 
+                className="absolute inset-0 flex items-center justify-center gap-2 font-semibold text-sm whitespace-nowrap text-[#f0bf5c] drop-shadow-md"
+                dangerouslySetInnerHTML={{ __html: targetHtml }}
+              />
             </motion.div>
 
             {/* Bouncing Pointer Arrow with tooltip */}
