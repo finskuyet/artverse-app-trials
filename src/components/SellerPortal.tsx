@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Lock, Sparkles, TrendingUp, DollarSign, Image as ImageIcon, Plus, CheckCircle, Trash2, Edit2, MessageSquare, AlertCircle, RefreshCw, Layers, Check, ShoppingBag, Eye, X, Loader2, Truck, Mail } from "lucide-react";
 import { Artwork, Order, Message } from "../types";
-
+import ExcelJS from "exceljs";
+import { saveAs } from "file-saver";
 const INDONESIAN_BANKS = [
   "BCA",
   "Mandiri",
@@ -418,59 +419,77 @@ export default function SellerPortal({
     }
   };
 
-  // Export orders to CSV (Pure CSV to avoid Excel warnings)
-  const handleExportOrdersCSV = () => {
+  // Export orders to Excel (Real XLSX to avoid warnings and support styles)
+  const handleExportOrdersCSV = async () => {
     if (orders.length === 0) return;
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Pesanan");
     const headers = ["ID Pesanan", "Tanggal", "Nama Pembeli", "Email", "Telepon", "Alamat", "Karya", "Total (Rp)", "Status", "No. Resi", "Kurir"];
     
-    const rows = orders.map(o => {
+    const headerRow = worksheet.addRow(headers);
+    headerRow.eachCell((cell) => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC89B3C' } };
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+    });
+
+    orders.forEach(o => {
       const date = new Date(o.date).toLocaleDateString("id-ID");
       const items = o.items.map(i => i.title).join(", ");
-      return [
+      const row = worksheet.addRow([
         o.id,
         date,
-        `"${o.buyerName.replace(/"/g, '""')}"`,
+        o.buyerName,
         o.email,
-        `="${o.phone}"`, // Force string for phone numbers in Excel
-        `"${o.address.replace(/"/g, '""')}, ${o.city} ${o.postalCode}"`,
-        `"${items.replace(/"/g, '""')}"`,
+        o.phone,
+        `${o.address}, ${o.city} ${o.postalCode}`,
+        items,
         o.totalPrice,
         o.status,
         o.shippingReceipt || "-",
         o.courier || "-"
-      ].join(";");
+      ]);
+      
+      row.getCell(5).numFmt = '@'; // Force text format for phone
+      row.eachCell((cell) => {
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+      });
     });
 
-    const csvContent = [headers.join(";"), ...rows].join("\n");
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `riwayat-pesanan-artverse-${new Date().toISOString().split("T")[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    worksheet.columns.forEach(column => { column.width = 22; });
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), `riwayat-pesanan-artverse-${new Date().toISOString().split("T")[0]}.xlsx`);
   };
 
-  // Export Newsletter to CSV
-  const handleExportNewsletterCSV = () => {
+  // Export Newsletter to Excel (Real XLSX)
+  const handleExportNewsletterCSV = async () => {
     if (newsletterSubs.length === 0) return;
+    
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Buletin");
     const headers = ["Email", "Tanggal Mendaftar"];
-    const rows = newsletterSubs.map(s => {
+    
+    const headerRow = worksheet.addRow(headers);
+    headerRow.eachCell((cell) => {
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFC89B3C' } };
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+    });
+
+    newsletterSubs.forEach(s => {
       const date = new Date(s.date).toLocaleDateString("id-ID", {
         day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
       });
-      return [s.email, `"${date}"`].join(";");
+      const row = worksheet.addRow([s.email, date]);
+      row.eachCell((cell) => {
+        cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+      });
     });
-    const csvContent = [headers.join(";"), ...rows].join("\n");
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.setAttribute("href", url);
-    link.setAttribute("download", `daftar-buletin-artverse-${new Date().toISOString().split("T")[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+
+    worksheet.columns.forEach(column => { column.width = 25; });
+    const buffer = await workbook.xlsx.writeBuffer();
+    saveAs(new Blob([buffer]), `daftar-buletin-artverse-${new Date().toISOString().split("T")[0]}.xlsx`);
   };
 
   // Quick edit artwork status directly from catalog table
@@ -1353,7 +1372,7 @@ export default function SellerPortal({
               }`}
             >
               <RefreshCw size={14} className="transform rotate-180" />
-              <span>Unduh Data (CSV)</span>
+              <span>Unduh Data (Excel)</span>
             </button>
           </div>
 
@@ -1795,7 +1814,7 @@ export default function SellerPortal({
                       : "bg-white border-stone-200 hover:border-[#c89b3c]/30 text-stone-700"
                   }`}
                 >
-                  <span>Unduh Data (CSV)</span>
+                  <span>Unduh Data (Excel)</span>
                 </button>
               </div>
             )}
