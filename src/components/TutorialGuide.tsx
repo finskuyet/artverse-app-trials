@@ -117,10 +117,10 @@ export default function TutorialGuide({
     return null;
   }, []);
 
-  // Detect mobile/tablet view (under 1024px)
+  // Detect mobile view (under 768px, matching Tailwind md breakpoint)
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobileView(window.innerWidth < 1024);
+      setIsMobileView(window.innerWidth < 768);
     };
     checkMobile();
     window.addEventListener("resize", checkMobile);
