@@ -425,12 +425,12 @@ export default function SellerPortal({
     
     let tableHtml = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
     tableHtml += '<head><meta charset="UTF-8"></head><body>';
-    tableHtml += '<table style="font-family: Arial, sans-serif;">';
+    tableHtml += '<table border="1" style="border-collapse: collapse; font-family: Arial, sans-serif;">';
     
     // Header Row with Color
     tableHtml += '<thead><tr>';
     headers.forEach(h => {
-      tableHtml += `<th style="background-color: #c89b3c; color: #ffffff; padding: 10px; font-weight: bold;">${h}</th>`;
+      tableHtml += `<th style="background-color: #c89b3c; color: #ffffff; padding: 10px; font-weight: bold; border: 1px solid #000000;">${h}</th>`;
     });
     tableHtml += '</tr></thead><tbody>';
 
@@ -440,18 +440,18 @@ export default function SellerPortal({
       const items = o.items.map(i => i.title).join(", ");
       
       tableHtml += '<tr>';
-      tableHtml += `<td style="padding: 5px;">${o.id}</td>`;
-      tableHtml += `<td style="padding: 5px;">${date}</td>`;
-      tableHtml += `<td style="padding: 5px;">${o.buyerName}</td>`;
-      tableHtml += `<td style="padding: 5px;">${o.email}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.id}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${date}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.buyerName}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.email}</td>`;
       // Use mso-number-format:"\@" to force string so 0 isn't lost in phone numbers
-      tableHtml += `<td style="padding: 5px; mso-number-format:'\\@';">${o.phone}</td>`;
-      tableHtml += `<td style="padding: 5px;">${o.address}, ${o.city} ${o.postalCode}</td>`;
-      tableHtml += `<td style="padding: 5px;">${items}</td>`;
-      tableHtml += `<td style="padding: 5px;">${o.totalPrice}</td>`;
-      tableHtml += `<td style="padding: 5px;">${o.status}</td>`;
-      tableHtml += `<td style="padding: 5px;">${o.shippingReceipt || "-"}</td>`;
-      tableHtml += `<td style="padding: 5px;">${o.courier || "-"}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px; mso-number-format:'\\@';">${o.phone}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.address}, ${o.city} ${o.postalCode}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${items}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.totalPrice}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.status}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.shippingReceipt || "-"}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.courier || "-"}</td>`;
       tableHtml += '</tr>';
     });
 
@@ -474,11 +474,11 @@ export default function SellerPortal({
     
     let tableHtml = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
     tableHtml += '<head><meta charset="UTF-8"></head><body>';
-    tableHtml += '<table style="font-family: Arial, sans-serif;">';
+    tableHtml += '<table border="1" style="border-collapse: collapse; font-family: Arial, sans-serif;">';
     
     tableHtml += '<thead><tr>';
     headers.forEach(h => {
-      tableHtml += `<th style="background-color: #c89b3c; color: #ffffff; padding: 10px; font-weight: bold;">${h}</th>`;
+      tableHtml += `<th style="background-color: #c89b3c; color: #ffffff; padding: 10px; font-weight: bold; border: 1px solid #000000;">${h}</th>`;
     });
     tableHtml += '</tr></thead><tbody>';
 
@@ -487,8 +487,8 @@ export default function SellerPortal({
         day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
       });
       tableHtml += '<tr>';
-      tableHtml += `<td style="padding: 5px;">${s.email}</td>`;
-      tableHtml += `<td style="padding: 5px;">${date}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${s.email}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${date}</td>`;
       tableHtml += '</tr>';
     });
 
