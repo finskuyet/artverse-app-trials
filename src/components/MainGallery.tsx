@@ -571,7 +571,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
           />
 
           {/* Modal box */}
-          <div className={`relative w-full max-w-5xl rounded-xl overflow-hidden shadow-2xl flex flex-col md:flex-row pointer-events-auto border max-h-[90vh] z-10 animate-in zoom-in-95 duration-200 transition-colors ${
+          <div className={`relative w-full max-w-5xl rounded-xl overflow-hidden shadow-2xl flex flex-col lg:flex-row pointer-events-auto border max-h-[90vh] z-10 animate-in zoom-in-95 duration-200 transition-colors ${
             isDark ? "bg-[#17130c] border-[#f0bf5c]/20" : "bg-white border-stone-200"
           }`}>
             {/* Close Button */}
@@ -587,7 +587,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
 
             {/* Left Column: Image box with mouse hover zoom & click to open full screen */}
             <div
-              className="relative w-full md:w-1/2 h-80 xs:h-96 sm:h-[450px] md:h-auto md:min-h-[500px] bg-black overflow-hidden flex items-center justify-center cursor-zoom-in"
+              className="relative w-full lg:w-1/2 h-80 xs:h-96 sm:h-[450px] lg:h-auto lg:min-h-[500px] bg-black overflow-hidden flex items-center justify-center cursor-zoom-in"
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
               onClick={() => setIsLightboxOpen(true)}
@@ -625,7 +625,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
             </div>
 
             {/* Right Column: Context details */}
-            <div className={`w-full md:w-1/2 p-6 md:p-8 flex flex-col overflow-y-auto custom-scrollbar transition-colors ${
+            <div className={`w-full lg:w-1/2 p-6 md:p-8 flex flex-col overflow-y-auto custom-scrollbar transition-colors ${
               isDark ? "bg-[#17130c]" : "bg-white"
             }`}>
               <span className={`text-[10px] font-bold uppercase tracking-[0.2em] mb-2 block ${

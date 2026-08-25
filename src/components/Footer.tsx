@@ -69,7 +69,7 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
         ? "bg-[#110e08] border-[#f0bf5c]/10" 
         : "bg-stone-100/60 border-stone-200 text-stone-800"
     }`}>
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-8 px-6 md:px-12 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-6 md:px-12 max-w-7xl mx-auto">
         <div className="flex flex-col gap-5">
           <div className={`font-display text-2xl font-bold tracking-widest ${
             isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"

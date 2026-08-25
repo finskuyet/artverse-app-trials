@@ -176,7 +176,7 @@ export default function Navbar({
 
             {/* Notification Dropdown Drawer */}
             {showNotifications && (
-              <div className={`absolute right-0 mt-3 w-80 rounded-xl shadow-2xl p-4 z-[110] animate-in fade-in slide-in-from-top-2 duration-200 ${
+              <div className={`absolute right-0 mt-3 w-[90vw] max-w-sm sm:w-80 rounded-xl shadow-2xl p-4 z-[110] animate-in fade-in slide-in-from-top-2 duration-200 ${
                 isDark 
                   ? "bg-[#17130c] border border-[#f0bf5c]/25 text-white" 
                   : "bg-white border border-stone-200 text-stone-800"
