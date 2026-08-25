@@ -418,57 +418,87 @@ export default function SellerPortal({
     }
   };
 
-  // Export orders to CSV
+  // Export orders to Excel (HTML format for styling)
   const handleExportOrdersCSV = () => {
     if (orders.length === 0) return;
     const headers = ["ID Pesanan", "Tanggal", "Nama Pembeli", "Email", "Telepon", "Alamat", "Karya", "Total (Rp)", "Status", "No. Resi", "Kurir"];
     
-    const rows = orders.map(o => {
+    let tableHtml = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+    tableHtml += '<head><meta charset="UTF-8"></head><body>';
+    tableHtml += '<table border="1" style="border-collapse: collapse; font-family: Arial, sans-serif;">';
+    
+    // Header Row with Color
+    tableHtml += '<thead><tr>';
+    headers.forEach(h => {
+      tableHtml += `<th style="background-color: #c89b3c; color: #ffffff; padding: 10px; font-weight: bold; border: 1px solid #000000;">${h}</th>`;
+    });
+    tableHtml += '</tr></thead><tbody>';
+
+    // Data Rows
+    orders.forEach(o => {
       const date = new Date(o.date).toLocaleDateString("id-ID");
-      const items = o.items.map(i => i.title).join(" | ");
-      return [
-        o.id,
-        date,
-        `"${o.buyerName.replace(/"/g, '""')}"`,
-        o.email,
-        `"${o.phone}"`,
-        `"${o.address.replace(/"/g, '""')}, ${o.city} ${o.postalCode}"`,
-        `"${items.replace(/"/g, '""')}"`,
-        o.totalPrice,
-        o.status,
-        o.shippingReceipt || "-",
-        o.courier || "-"
-      ].join(";");
+      const items = o.items.map(i => i.title).join(", ");
+      
+      tableHtml += '<tr>';
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.id}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${date}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.buyerName}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.email}</td>`;
+      // Use mso-number-format:"\@" to force string so 0 isn't lost in phone numbers
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px; mso-number-format:'\\@';">${o.phone}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.address}, ${o.city} ${o.postalCode}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${items}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.totalPrice}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.status}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.shippingReceipt || "-"}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${o.courier || "-"}</td>`;
+      tableHtml += '</tr>';
     });
 
-    const csvContent = [headers.join(";"), ...rows].join("\n");
-    // Menambahkan BOM (\uFEFF) agar terbaca sebagai UTF-8 di Excel
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    tableHtml += '</tbody></table></body></html>';
+
+    const blob = new Blob(["\uFEFF" + tableHtml], { type: "application/vnd.ms-excel;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `riwayat-pesanan-artverse-${new Date().toISOString().split("T")[0]}.csv`);
+    link.setAttribute("download", `riwayat-pesanan-artverse-${new Date().toISOString().split("T")[0]}.xls`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  // Export Newsletter to CSV
+  // Export Newsletter to Excel
   const handleExportNewsletterCSV = () => {
     if (newsletterSubs.length === 0) return;
     const headers = ["Email", "Tanggal Mendaftar"];
-    const rows = newsletterSubs.map(s => {
+    
+    let tableHtml = '<html xmlns:x="urn:schemas-microsoft-com:office:excel">';
+    tableHtml += '<head><meta charset="UTF-8"></head><body>';
+    tableHtml += '<table border="1" style="border-collapse: collapse; font-family: Arial, sans-serif;">';
+    
+    tableHtml += '<thead><tr>';
+    headers.forEach(h => {
+      tableHtml += `<th style="background-color: #c89b3c; color: #ffffff; padding: 10px; font-weight: bold; border: 1px solid #000000;">${h}</th>`;
+    });
+    tableHtml += '</tr></thead><tbody>';
+
+    newsletterSubs.forEach(s => {
       const date = new Date(s.date).toLocaleDateString("id-ID", {
         day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
       });
-      return [s.email, `"${date}"`].join(";");
+      tableHtml += '<tr>';
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${s.email}</td>`;
+      tableHtml += `<td style="border: 1px solid #000000; padding: 5px;">${date}</td>`;
+      tableHtml += '</tr>';
     });
-    const csvContent = [headers.join(";"), ...rows].join("\n");
-    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+
+    tableHtml += '</tbody></table></body></html>';
+
+    const blob = new Blob(["\uFEFF" + tableHtml], { type: "application/vnd.ms-excel;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `daftar-buletin-artverse-${new Date().toISOString().split("T")[0]}.csv`);
+    link.setAttribute("download", `daftar-buletin-artverse-${new Date().toISOString().split("T")[0]}.xls`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1354,7 +1384,7 @@ export default function SellerPortal({
               }`}
             >
               <RefreshCw size={14} className="transform rotate-180" />
-              <span>Unduh Data (CSV)</span>
+              <span>Unduh Data (Excel)</span>
             </button>
           </div>
 
@@ -1796,7 +1826,7 @@ export default function SellerPortal({
                       : "bg-white border-stone-200 hover:border-[#c89b3c]/30 text-stone-700"
                   }`}
                 >
-                  <span>Unduh Data (CSV)</span>
+                  <span>Unduh Data (Excel)</span>
                 </button>
               </div>
             )}
