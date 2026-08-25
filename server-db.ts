@@ -139,7 +139,11 @@ async function uploadImageToSupabaseStorage(base64Data: string, folder: string, 
 }
 
 // Local JSON File Database Setup
-const DB_FILE = path.join(process.cwd(), "db.json");
+// Gunakan folder sementara (/tmp) jika dijalankan di server Vercel (karena Vercel bersifat read-only)
+const isServerless = !!(process.env.VERCEL || process.env.VERCEL_ENV);
+const DB_FILE = isServerless 
+  ? path.join("/tmp", "db.json") 
+  : path.join(process.cwd(), "db.json");
 
 const defaultArtworks: Artwork[] = [
   {
@@ -234,7 +238,11 @@ function loadLocalDb() {
       paymentSettings: defaultPaymentSettings,
       newsletter: []
     };
-    fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), "utf8");
+    try {
+      fs.writeFileSync(DB_FILE, JSON.stringify(db, null, 2), "utf8");
+    } catch (err) {
+      console.error("Gagal membuat db.json (kemungkinan read-only file system). Menggunakan memori sementara.", err);
+    }
     return db;
   }
   try {
