@@ -429,24 +429,46 @@ export default function SellerPortal({
       return [
         o.id,
         date,
-        `"${o.buyerName}"`,
+        `"${o.buyerName.replace(/"/g, '""')}"`,
         o.email,
-        o.phone,
-        `"${o.address}, ${o.city} ${o.postalCode}"`,
-        `"${items}"`,
+        `"${o.phone}"`,
+        `"${o.address.replace(/"/g, '""')}, ${o.city} ${o.postalCode}"`,
+        `"${items.replace(/"/g, '""')}"`,
         o.totalPrice,
         o.status,
         o.shippingReceipt || "-",
         o.courier || "-"
-      ].join(",");
+      ].join(";");
     });
 
-    const csvContent = [headers.join(","), ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const csvContent = [headers.join(";"), ...rows].join("\n");
+    // Menambahkan BOM (\uFEFF) agar terbaca sebagai UTF-8 di Excel
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
     link.setAttribute("download", `riwayat-pesanan-artverse-${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  // Export Newsletter to CSV
+  const handleExportNewsletterCSV = () => {
+    if (newsletterSubs.length === 0) return;
+    const headers = ["Email", "Tanggal Mendaftar"];
+    const rows = newsletterSubs.map(s => {
+      const date = new Date(s.date).toLocaleDateString("id-ID", {
+        day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"
+      });
+      return [s.email, `"${date}"`].join(";");
+    });
+    const csvContent = [headers.join(";"), ...rows].join("\n");
+    const blob = new Blob(["\uFEFF" + csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `daftar-buletin-artverse-${new Date().toISOString().split("T")[0]}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -1752,19 +1774,31 @@ export default function SellerPortal({
               </p>
             </div>
             {newsletterSubs.length > 0 && (
-              <a
-                href={`https://mail.google.com/mail/?view=cm&fs=1&bcc=${newsletterSubs.map(s => s.email).join(",")}&su=Pembaruan%20Katalog%20Artverse&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-md cursor-pointer ${
-                  isDark 
-                    ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" 
-                    : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
-                }`}
-              >
-                <Mail size={14} />
-                <span>Kirim Broadcast ke Semua (BCC)</span>
-              </a>
+              <div className="flex flex-wrap items-center gap-2">
+                <a
+                  href={`https://mail.google.com/mail/?view=cm&fs=1&bcc=${newsletterSubs.map(s => s.email).join(",")}&su=Pembaruan%20Katalog%20Artverse&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-md cursor-pointer ${
+                    isDark 
+                      ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" 
+                      : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
+                  }`}
+                >
+                  <Mail size={14} />
+                  <span>Kirim Broadcast</span>
+                </a>
+                <button
+                  onClick={handleExportNewsletterCSV}
+                  className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-md cursor-pointer border ${
+                    isDark
+                      ? "bg-[#1f1b14] border-[#4e4637]/30 hover:border-[#f0bf5c]/30 text-stone-200"
+                      : "bg-white border-stone-200 hover:border-[#c89b3c]/30 text-stone-700"
+                  }`}
+                >
+                  <span>Unduh Data (CSV)</span>
+                </button>
+              </div>
             )}
           </div>
 
