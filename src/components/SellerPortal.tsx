@@ -1753,7 +1753,7 @@ export default function SellerPortal({
             </div>
             {newsletterSubs.length > 0 && (
               <a
-                href={`mailto:?bcc=${newsletterSubs.map(s => s.email).join(",")}&subject=Pembaruan%20Katalog%20Artverse&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`}
+                href={`https://mail.google.com/mail/?view=cm&fs=1&bcc=${newsletterSubs.map(s => s.email).join(",")}&su=Pembaruan%20Katalog%20Artverse&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`px-4 py-2 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-2 transition-all shadow-md cursor-pointer ${
