@@ -320,10 +320,10 @@ export default function TutorialGuide({
 
             {/* Header section with step indicators */}
             <div className="flex items-center justify-between mb-3 sm:mb-4 mt-2">
-              <span className={`text-[10px] font-mono font-bold uppercase tracking-widest px-2.5 py-1 rounded-full ${
+              <span className={`text-[10px] font-mono font-bold uppercase tracking-widest px-3 py-1 rounded-full ${
                 isDark ? "bg-[#f0bf5c]/15 text-[#f0bf5c]" : "bg-[#c89b3c]/15 text-[#c89b3c]"
               }`}>
-                Langkah {currentStep + 1} dari {tourSteps.length}
+                Langkah {currentStep + 1} dari {tourSteps.length} - {currentStepData.title}
               </span>
               <button
                 onClick={handleSkip}
