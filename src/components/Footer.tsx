@@ -2,9 +2,10 @@ import { Camera, Mail } from "lucide-react";
 
 interface FooterProps {
   theme?: "dark" | "light";
+  onSecretAccess?: () => void;
 }
 
-export default function Footer({ theme = "dark" }: FooterProps) {
+export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) {
   const isDark = theme === "dark";
 
   return (
@@ -112,7 +113,12 @@ export default function Footer({ theme = "dark" }: FooterProps) {
       <div className={`max-w-7xl mx-auto px-6 md:px-12 mt-12 pt-8 border-t flex flex-col md:flex-row justify-between items-center gap-4 text-xs ${
         isDark ? "border-[#f0bf5c]/5 text-[#d2c5b1]/80" : "border-stone-200 text-stone-500"
       }`}>
-        <p>© 2026 ArtVerse Fine Art Gallery. All rights reserved.</p>
+        <p>
+          © 2026 ArtVerse Fine Art Gallery. All rights reserved. 
+          <button onClick={onSecretAccess} className="ml-2 text-[8px] opacity-0 hover:opacity-50 cursor-pointer">
+            Portal Penjual
+          </button>
+        </p>
         <div className="flex gap-6">
           <a href="#" className={`transition-colors flex items-center gap-1 ${isDark ? "hover:text-[#f0bf5c]" : "hover:text-[#c89b3c]"}`}>
             <Camera size={16} />

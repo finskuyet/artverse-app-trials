@@ -55,6 +55,18 @@ export default function App() {
     }
   }, []);
 
+  // Secret keyboard shortcut to open seller portal (Shift + S)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.shiftKey && (e.key === 'S' || e.key === 's')) {
+        setActiveView("seller");
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
@@ -222,7 +234,7 @@ export default function App() {
       </div>
 
       {/* Static Footer */}
-      <Footer theme={theme} />
+      <Footer theme={theme} onSecretAccess={() => setActiveView("seller")} />
 
       {/* Floating Real-time Toast Alerts Overlay */}
       {activeToast && (
