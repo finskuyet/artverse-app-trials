@@ -208,6 +208,8 @@ export default function Navbar({
             )}
           </div>
 
+          {/* Disembunyikan sementara */}
+          {false && (
           <button
             id="nav-seller"
             onClick={() => setActiveView("seller")}
@@ -220,6 +222,7 @@ export default function Navbar({
             <Lock size={11} />
             <span>Portal Penjual</span>
           </button>
+          )}
 
           {/* Hamburger Mobile Menu */}
           <button
@@ -297,6 +300,7 @@ export default function Navbar({
           >
             <span>📦 Transaksi Saya</span>
           </button>
+          {false && (
           <button
             id="nav-seller-mobile"
             onClick={() => {
@@ -311,6 +315,7 @@ export default function Navbar({
           >
             <span>🔒 Portal Penjual</span>
           </button>
+          )}
         </div>
       )}
     </nav>
