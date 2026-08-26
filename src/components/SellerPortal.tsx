@@ -284,8 +284,16 @@ export default function SellerPortal({
         setTimeout(() => setUploadSuccess(false), 4000);
         loadDashboardData();
       } else {
-        const errorData = await res.json();
-        setUploadError(errorData.error || "Gagal mengunggah lukisan.");
+        let errorMsg = "Gagal mengunggah lukisan.";
+        try {
+          const errorData = await res.json();
+          if (errorData.error) errorMsg = errorData.error;
+        } catch (e) {
+          if (res.status === 413) {
+            errorMsg = "Ukuran gambar terlalu besar (Maksimal ~100MB).";
+          }
+        }
+        setUploadError(errorMsg);
       }
     } catch (err) {
       console.error("Upload error", err);
