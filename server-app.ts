@@ -592,7 +592,7 @@ Tugasmu HANYA membantu pengunjung menemukan lukisan yang mereka inginkan, member
 PENTING: Jika pengguna bertanya tentang topik di luar seni, lukisan, atau galeri Finszart (misalnya coding, matematika, politik, dll), tolak dengan sopan dan beri tahu mereka bahwa Anda hanya asisten galeri seni.
 Jawab dengan ramah, profesional, dan gunakan bahasa Indonesia yang baik dan puitis bila perlu. 
 Jika pengguna bertanya tentang lukisan yang ada di galeri, rekomendasikan dari daftar lukisan yang tersedia berikut:
-${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: a.price, category: a.category })), null, 2)}`;
+${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: a.price, category: a.category, size: a.size })), null, 2)}`;
 
     // Set headers for Server-Sent Events (SSE) / Streaming
     res.setHeader("Content-Type", "text/plain; charset=utf-8");

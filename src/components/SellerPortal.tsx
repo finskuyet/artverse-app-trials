@@ -66,6 +66,10 @@ export default function SellerPortal({
   const [uploadError, setUploadError] = useState("");
   const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
 
+  // Catalog filters
+  const [catalogCategoryFilter, setCatalogCategoryFilter] = useState("Kategori");
+  const [catalogYearFilter, setCatalogYearFilter] = useState("Tahun");
+
   // Edit/Zoom Modal States
   const [zoomReceiptUrl, setZoomReceiptUrl] = useState<string | null>(null);
   const [editingArtwork, setEditingArtwork] = useState<Artwork | null>(null);
@@ -1062,6 +1066,45 @@ export default function SellerPortal({
           }`}>
             <h2 className={`font-display text-lg font-bold ${isDark ? "text-white" : "text-stone-900"}`}>Daftar Katalog Karya Seni</h2>
             <div className="flex items-center gap-2">
+              {/* Category Filter */}
+              <select
+                value={catalogCategoryFilter}
+                onChange={(e) => setCatalogCategoryFilter(e.target.value)}
+                className={`appearance-none rounded px-3 py-2 text-xs font-semibold cursor-pointer outline-none transition-all ${
+                  isDark 
+                    ? "bg-[#1f1b14] border border-[#4e4637]/30 text-[#ebe1d6] hover:border-[#f0bf5c]/50" 
+                    : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50"
+                }`}
+              >
+                <option>Kategori</option>
+                <option>Realisme Klasik</option>
+                <option>Abstrak Modern</option>
+                <option>Impressionisme</option>
+                <option>Surealisme</option>
+                <option>Ink on Canvas</option>
+                <option>Ekspresionisme</option>
+                <option>Abstrak Jawa</option>
+              </select>
+
+              {/* Year Filter */}
+              <select
+                value={catalogYearFilter}
+                onChange={(e) => setCatalogYearFilter(e.target.value)}
+                className={`appearance-none rounded px-3 py-2 text-xs font-semibold cursor-pointer outline-none transition-all ${
+                  isDark 
+                    ? "bg-[#1f1b14] border border-[#4e4637]/30 text-[#ebe1d6] hover:border-[#f0bf5c]/50" 
+                    : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50"
+                }`}
+              >
+                <option>Tahun</option>
+                <option>2026</option>
+                <option>2025</option>
+                <option>2024</option>
+                <option>2023</option>
+                <option>2022</option>
+                <option>Lama</option>
+              </select>
+
               <button
                 onClick={handleClearSoldArtworks}
                 className={`font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer px-3 py-2 rounded border ${
@@ -1071,7 +1114,7 @@ export default function SellerPortal({
                 }`}
               >
                 <Trash2 size={14} />
-                <span>Bersihkan Karya Terjual</span>
+                <span className="hidden sm:inline">Bersihkan Karya Terjual</span>
               </button>
               <button
                 onClick={() => setActiveTab("upload")}
@@ -1082,7 +1125,7 @@ export default function SellerPortal({
                 }`}
               >
                 <Plus size={14} />
-                <span>Tambah Baru</span>
+                <span className="hidden sm:inline">Tambah Baru</span>
               </button>
             </div>
           </div>
@@ -1106,8 +1149,22 @@ export default function SellerPortal({
               <tbody className={`divide-y ${
                 isDark ? "divide-[#f0bf5c]/5 text-[#ebe1d6]" : "divide-stone-100 text-stone-800"
               }`}>
-                {artworks.map((art) => (
-                  <tr key={art.id} className={isDark ? "hover:bg-[#ebe1d6]/5 transition-colors" : "hover:bg-stone-50 transition-colors"}>
+                {artworks
+                  .filter((art) => {
+                    const matchCategory = catalogCategoryFilter === "Kategori" || art.category === catalogCategoryFilter;
+                    // For year filter: handle "Lama" correctly if year < 2022
+                    let matchYear = true;
+                    if (catalogYearFilter !== "Tahun") {
+                      if (catalogYearFilter === "Lama") {
+                        matchYear = parseInt(art.year) < 2022;
+                      } else {
+                        matchYear = art.year === catalogYearFilter;
+                      }
+                    }
+                    return matchCategory && matchYear;
+                  })
+                  .map((art) => (
+                    <tr key={art.id} className={isDark ? "hover:bg-[#ebe1d6]/5 transition-colors" : "hover:bg-stone-50 transition-colors"}>
                     <td className="p-4 flex items-center gap-3">
                       <div className={`w-10 h-12 rounded overflow-hidden flex-shrink-0 border ${
                         isDark ? "bg-black border-[#f0bf5c]/10" : "bg-white border-stone-200"
