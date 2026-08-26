@@ -489,7 +489,11 @@ app.put("/api/payment-settings", async (req, res) => {
     aboutUsText,
     faqText,
     shippingText,
-    termsText
+    termsText,
+    footerDescription,
+    galleryText,
+    artistText,
+    exhibitionText
   } = req.body;
   
   try {
@@ -509,7 +513,11 @@ app.put("/api/payment-settings", async (req, res) => {
       aboutUsText: aboutUsText !== undefined ? aboutUsText : current.aboutUsText || "",
       faqText: faqText !== undefined ? faqText : current.faqText || "",
       shippingText: shippingText !== undefined ? shippingText : current.shippingText || "",
-      termsText: termsText !== undefined ? termsText : current.termsText || ""
+      termsText: termsText !== undefined ? termsText : current.termsText || "",
+      footerDescription: footerDescription !== undefined ? footerDescription : current.footerDescription || "",
+      galleryText: galleryText !== undefined ? galleryText : current.galleryText || "",
+      artistText: artistText !== undefined ? artistText : current.artistText || "",
+      exhibitionText: exhibitionText !== undefined ? exhibitionText : current.exhibitionText || ""
     };
 
     const saved = await dbRepository.updatePaymentSettings(updatedSettings);

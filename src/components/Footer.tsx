@@ -17,6 +17,10 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
   const [faqText, setFaqText] = useState("T: Apakah lukisan dilengkapi sertifikat?\nJ: Ya, setiap pembelian dilengkapi dengan Sertifikat Keaslian fisik bersertifikasi.\n\nT: Bisakah dibatalkan?\nJ: Pembatalan hanya dapat dilakukan dalam kurun waktu 24 jam setelah pembayaran.");
   const [shippingText, setShippingText] = useState("Kami menggunakan jasa kurir asuransi khusus seni rupa (fine-art logistics) untuk menjamin lukisan tiba dengan aman tanpa cacat. Pengiriman memakan waktu 2-5 hari untuk domestik, dan 7-14 hari untuk internasional.");
   const [termsText, setTermsText] = useState("Dengan mengakses, menggunakan, atau melakukan transaksi di ArtVerse, Anda dianggap telah membaca, memahami, dan menyetujui semua aturan hak cipta, perlindungan privasi, dan protokol jual beli benda seni otentik yang berlaku.");
+  const [footerDescription, setFooterDescription] = useState("Menghubungkan kolektor elit dengan mahakarya seniman terbaik melalui platform digital yang terkurasi dengan sempurna.");
+  const [galleryText, setGalleryText] = useState("Koleksi kami mencakup ratusan lukisan otentik dari berbagai aliran mulai dari Realisme klasik hingga Abstrak kontemporer. Anda dapat menjelajahi keseluruhan katalog kami langsung dari Halaman Utama.");
+  const [artistText, setArtistText] = useState("Saat ini ArtVerse telah bekerja sama secara eksklusif dengan lebih dari 50 pelukis maestro dan seniman muda berbakat dari kancah lokal maupun internasional.");
+  const [exhibitionText, setExhibitionText] = useState("Fitur Pameran 3D Virtual interaktif saat ini sedang dalam tahap pengembangan akhir oleh tim insinyur kami. Segera hadir untuk memberikan Anda pengalaman menjelajah galeri secara imersif dari rumah!");
 
   useEffect(() => {
     // Fetch global payment settings to get the dynamic contact email
@@ -31,6 +35,10 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
           if (data.faqText) setFaqText(data.faqText);
           if (data.shippingText) setShippingText(data.shippingText);
           if (data.termsText) setTermsText(data.termsText);
+          if (data.footerDescription) setFooterDescription(data.footerDescription);
+          if (data.galleryText) setGalleryText(data.galleryText);
+          if (data.artistText) setArtistText(data.artistText);
+          if (data.exhibitionText) setExhibitionText(data.exhibitionText);
         }
       })
       .catch(err => console.error("Error loading footer settings:", err));
@@ -66,9 +74,9 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
 
   const footerData = {
     tentang: { title: "Tentang Kami", content: aboutUsText },
-    galeri: { title: "Galeri Lukisan", content: "Koleksi kami mencakup ratusan lukisan otentik dari berbagai aliran mulai dari Realisme klasik hingga Abstrak kontemporer. Anda dapat menjelajahi keseluruhan katalog kami langsung dari Halaman Utama." },
-    seniman: { title: "Seniman", content: "Saat ini ArtVerse telah bekerja sama secara eksklusif dengan lebih dari 50 pelukis maestro dan seniman muda berbakat dari kancah lokal maupun internasional." },
-    pameran: { title: "Pameran Virtual", content: "Fitur Pameran 3D Virtual interaktif saat ini sedang dalam tahap pengembangan akhir oleh tim insinyur kami. Segera hadir untuk memberikan Anda pengalaman menjelajah galeri secara imersif dari rumah!" },
+    galeri: { title: "Galeri Lukisan", content: galleryText },
+    seniman: { title: "Seniman", content: artistText },
+    pameran: { title: "Pameran Virtual", content: exhibitionText },
     faq: { title: "FAQ (Tanya Jawab)", content: faqText },
     pengiriman: { title: "Kebijakan Pengiriman", content: shippingText },
     syarat: { title: "Syarat & Ketentuan", content: termsText },
@@ -89,7 +97,7 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
             ARTVERSE
           </div>
           <p className={`text-sm leading-relaxed ${isDark ? "text-[#d2c5b1]/80" : "text-stone-600"}`}>
-            Menghubungkan kolektor elit dengan mahakarya seniman terbaik melalui platform digital yang terkurasi dengan sempurna.
+            {footerDescription}
           </p>
         </div>
         <div>

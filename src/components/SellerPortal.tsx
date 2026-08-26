@@ -99,6 +99,10 @@ export default function SellerPortal({
   const [faqText, setFaqText] = useState("");
   const [shippingText, setShippingText] = useState("");
   const [termsText, setTermsText] = useState("");
+  const [footerDescription, setFooterDescription] = useState("");
+  const [galleryText, setGalleryText] = useState("");
+  const [artistText, setArtistText] = useState("");
+  const [exhibitionText, setExhibitionText] = useState("");
   const [settingsSuccess, setSettingsSuccess] = useState(false);
   const [settingsError, setSettingsError] = useState("");
   const [savingSettings, setSavingSettings] = useState(false);
@@ -127,6 +131,10 @@ export default function SellerPortal({
         if (data.faqText) setFaqText(data.faqText);
         if (data.shippingText) setShippingText(data.shippingText);
         if (data.termsText) setTermsText(data.termsText);
+        if (data.footerDescription) setFooterDescription(data.footerDescription);
+        if (data.galleryText) setGalleryText(data.galleryText);
+        if (data.artistText) setArtistText(data.artistText);
+        if (data.exhibitionText) setExhibitionText(data.exhibitionText);
       }
     } catch (err) {
       console.error("Error loading payment settings:", err);
@@ -594,6 +602,10 @@ export default function SellerPortal({
           faqText,
           shippingText,
           termsText,
+          footerDescription,
+          galleryText,
+          artistText,
+          exhibitionText,
         }),
       });
 
@@ -2298,18 +2310,84 @@ export default function SellerPortal({
 
                 <div className="space-y-2 pt-2">
                   <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
-                    Isi Teks: Tentang Kami
+                    Deskripsi Singkat Bawah Logo
                   </label>
                   <textarea
-                    rows={3}
-                    value={aboutUsText}
-                    onChange={(e) => setAboutUsText(e.target.value)}
+                    rows={2}
+                    value={footerDescription}
+                    onChange={(e) => setFooterDescription(e.target.value)}
                     className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
                       isDark 
                         ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
                         : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
                     }`}
                   />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                      Isi Teks: Tentang Kami
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={aboutUsText}
+                      onChange={(e) => setAboutUsText(e.target.value)}
+                      className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
+                        isDark 
+                          ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                          : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                      }`}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                      Isi Teks: Galeri Lukisan
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={galleryText}
+                      onChange={(e) => setGalleryText(e.target.value)}
+                      className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
+                        isDark 
+                          ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                          : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                      Isi Teks: Seniman
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={artistText}
+                      onChange={(e) => setArtistText(e.target.value)}
+                      className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
+                        isDark 
+                          ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                          : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                      }`}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                      Isi Teks: Pameran Virtual
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={exhibitionText}
+                      onChange={(e) => setExhibitionText(e.target.value)}
+                      className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
+                        isDark 
+                          ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                          : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                      }`}
+                    />
+                  </div>
                 </div>
 
                 <div className="space-y-2">
