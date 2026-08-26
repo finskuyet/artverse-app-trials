@@ -93,6 +93,12 @@ export default function SellerPortal({
   const [qrisImage, setQrisImage] = useState("");
   const [whatsappNumber, setWhatsappNumber] = useState("");
   const [contactEmail, setContactEmail] = useState("inquire@artverse.com");
+  const [contactPhone, setContactPhone] = useState("+62 811-0000-0000");
+  const [contactAddress, setContactAddress] = useState("Studio: SCBD, Jakarta, Indonesia.");
+  const [aboutUsText, setAboutUsText] = useState("");
+  const [faqText, setFaqText] = useState("");
+  const [shippingText, setShippingText] = useState("");
+  const [termsText, setTermsText] = useState("");
   const [settingsSuccess, setSettingsSuccess] = useState(false);
   const [settingsError, setSettingsError] = useState("");
   const [savingSettings, setSavingSettings] = useState(false);
@@ -115,6 +121,12 @@ export default function SellerPortal({
         setQrisImage(data.qrisImage || "");
         setWhatsappNumber(data.whatsappNumber || "");
         if (data.contactEmail) setContactEmail(data.contactEmail);
+        if (data.contactPhone) setContactPhone(data.contactPhone);
+        if (data.contactAddress) setContactAddress(data.contactAddress);
+        if (data.aboutUsText) setAboutUsText(data.aboutUsText);
+        if (data.faqText) setFaqText(data.faqText);
+        if (data.shippingText) setShippingText(data.shippingText);
+        if (data.termsText) setTermsText(data.termsText);
       }
     } catch (err) {
       console.error("Error loading payment settings:", err);
@@ -576,6 +588,12 @@ export default function SellerPortal({
           qrisImage,
           whatsappNumber,
           contactEmail,
+          contactPhone,
+          contactAddress,
+          aboutUsText,
+          faqText,
+          shippingText,
+          termsText,
         }),
       });
 
@@ -2217,9 +2235,9 @@ export default function SellerPortal({
                 isDark ? "bg-[#110e08] border-[#4e4637]/30" : "bg-stone-50 border-stone-200"
               }`}>
                 <h3 className={`font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 ${isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"}`}>
-                  <span>📧 Alamat Email Kontak Galeri</span>
+                  <span>📍 Pengaturan Tampilan & Kontak Galeri (Footer)</span>
                 </h3>
-
+                
                 <div className="space-y-2">
                   <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
                     Email Galeri Publik *
@@ -2237,9 +2255,110 @@ export default function SellerPortal({
                     }`}
                   />
                   <p className={`text-[10px] leading-relaxed italic ${isDark ? "text-[#9b8f7d]" : "text-stone-400"}`}>
-                    * Alamat email ini akan ditampilkan secara publik di bagian bawah situs (Footer). 
-                    Ini adalah kontak resmi galeri Anda untuk menerima pertanyaan via email dari kolektor seni.
+                    * Alamat email ini akan ditampilkan secara publik di modal Hubungi Kami (Footer).
                   </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                      Nomor Telepon Publik *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={contactPhone}
+                      onChange={(e) => setContactPhone(e.target.value)}
+                      placeholder="Contoh: +62 811-0000-0000"
+                      className={`w-full rounded-lg p-3 text-xs outline-none transition-all ${
+                        isDark 
+                          ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                          : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                      }`}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                      Alamat Studio (Baris Singkat) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={contactAddress}
+                      onChange={(e) => setContactAddress(e.target.value)}
+                      placeholder="Contoh: Studio: SCBD, Jakarta"
+                      className={`w-full rounded-lg p-3 text-xs outline-none transition-all ${
+                        isDark 
+                          ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                          : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-2">
+                  <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                    Isi Teks: Tentang Kami
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={aboutUsText}
+                    onChange={(e) => setAboutUsText(e.target.value)}
+                    className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
+                      isDark 
+                        ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                        : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                    }`}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                    Isi Teks: FAQ (Tanya Jawab)
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={faqText}
+                    onChange={(e) => setFaqText(e.target.value)}
+                    className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
+                      isDark 
+                        ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                        : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                    }`}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                      Isi Teks: Kebijakan Pengiriman
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={shippingText}
+                      onChange={(e) => setShippingText(e.target.value)}
+                      className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
+                        isDark 
+                          ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                          : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                      }`}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <label className={`text-[10px] font-bold uppercase tracking-wider block ${isDark ? "text-[#d2c5b1]" : "text-stone-600"}`}>
+                      Isi Teks: Syarat & Ketentuan
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={termsText}
+                      onChange={(e) => setTermsText(e.target.value)}
+                      className={`w-full rounded-lg p-3 text-xs outline-none transition-all custom-scrollbar ${
+                        isDark 
+                          ? "bg-[#1f1b14] border border-[#4e4637]/30 focus:border-[#f0bf5c] text-white" 
+                          : "bg-white border border-stone-300 focus:border-[#c89b3c] text-stone-950"
+                      }`}
+                    />
+                  </div>
                 </div>
               </div>
 

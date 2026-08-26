@@ -11,17 +11,29 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [contactEmail, setContactEmail] = useState("inquire@artverse.com");
+  const [contactPhone, setContactPhone] = useState("+62 811-0000-0000");
+  const [contactAddress, setContactAddress] = useState("Studio: SCBD, Jakarta, Indonesia.");
+  const [aboutUsText, setAboutUsText] = useState("ArtVerse adalah galeri seni premium digital yang didirikan pada tahun 2026. Kami berdedikasi untuk menghubungkan mahakarya seniman terbaik dengan para kolektor seni dari seluruh dunia dengan kurasi yang ketat dan jaminan keaslian.");
+  const [faqText, setFaqText] = useState("T: Apakah lukisan dilengkapi sertifikat?\nJ: Ya, setiap pembelian dilengkapi dengan Sertifikat Keaslian fisik bersertifikasi.\n\nT: Bisakah dibatalkan?\nJ: Pembatalan hanya dapat dilakukan dalam kurun waktu 24 jam setelah pembayaran.");
+  const [shippingText, setShippingText] = useState("Kami menggunakan jasa kurir asuransi khusus seni rupa (fine-art logistics) untuk menjamin lukisan tiba dengan aman tanpa cacat. Pengiriman memakan waktu 2-5 hari untuk domestik, dan 7-14 hari untuk internasional.");
+  const [termsText, setTermsText] = useState("Dengan mengakses, menggunakan, atau melakukan transaksi di ArtVerse, Anda dianggap telah membaca, memahami, dan menyetujui semua aturan hak cipta, perlindungan privasi, dan protokol jual beli benda seni otentik yang berlaku.");
 
   useEffect(() => {
     // Fetch global payment settings to get the dynamic contact email
     fetch("/api/payment-settings")
       .then(res => res.json())
       .then(data => {
-        if (data && data.contactEmail) {
-          setContactEmail(data.contactEmail);
+        if (data) {
+          if (data.contactEmail) setContactEmail(data.contactEmail);
+          if (data.contactPhone) setContactPhone(data.contactPhone);
+          if (data.contactAddress) setContactAddress(data.contactAddress);
+          if (data.aboutUsText) setAboutUsText(data.aboutUsText);
+          if (data.faqText) setFaqText(data.faqText);
+          if (data.shippingText) setShippingText(data.shippingText);
+          if (data.termsText) setTermsText(data.termsText);
         }
       })
-      .catch(err => console.error("Error loading contact email:", err));
+      .catch(err => console.error("Error loading footer settings:", err));
   }, []);
 
   const handleSubscribe = async (e: React.FormEvent) => {
@@ -53,14 +65,14 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
   const [activeModal, setActiveModal] = useState<{title: string, content: string} | null>(null);
 
   const footerData = {
-    tentang: { title: "Tentang Kami", content: "ArtVerse adalah galeri seni premium digital yang didirikan pada tahun 2026. Kami berdedikasi untuk menghubungkan mahakarya seniman terbaik dengan para kolektor seni dari seluruh dunia dengan kurasi yang ketat dan jaminan keaslian." },
+    tentang: { title: "Tentang Kami", content: aboutUsText },
     galeri: { title: "Galeri Lukisan", content: "Koleksi kami mencakup ratusan lukisan otentik dari berbagai aliran mulai dari Realisme klasik hingga Abstrak kontemporer. Anda dapat menjelajahi keseluruhan katalog kami langsung dari Halaman Utama." },
     seniman: { title: "Seniman", content: "Saat ini ArtVerse telah bekerja sama secara eksklusif dengan lebih dari 50 pelukis maestro dan seniman muda berbakat dari kancah lokal maupun internasional." },
     pameran: { title: "Pameran Virtual", content: "Fitur Pameran 3D Virtual interaktif saat ini sedang dalam tahap pengembangan akhir oleh tim insinyur kami. Segera hadir untuk memberikan Anda pengalaman menjelajah galeri secara imersif dari rumah!" },
-    faq: { title: "FAQ (Tanya Jawab)", content: "T: Apakah lukisan dilengkapi sertifikat?\nJ: Ya, setiap pembelian dilengkapi dengan Sertifikat Keaslian fisik bersertifikasi.\n\nT: Bisakah dibatalkan?\nJ: Pembatalan hanya dapat dilakukan dalam kurun waktu 24 jam setelah pembayaran." },
-    pengiriman: { title: "Kebijakan Pengiriman", content: "Kami menggunakan jasa kurir asuransi khusus seni rupa (fine-art logistics) untuk menjamin lukisan tiba dengan aman tanpa cacat. Pengiriman memakan waktu 2-5 hari untuk domestik, dan 7-14 hari untuk internasional." },
-    syarat: { title: "Syarat & Ketentuan", content: "Dengan mengakses, menggunakan, atau melakukan transaksi di ArtVerse, Anda dianggap telah membaca, memahami, dan menyetujui semua aturan hak cipta, perlindungan privasi, dan protokol jual beli benda seni otentik yang berlaku." },
-    kontak: { title: "Hubungi Kami", content: `Kami siap melayani kebutuhan koleksi seni Anda 24/7.\nEmail: ${contactEmail}\nTelepon: +62 811-0000-0000\nStudio: SCBD, Jakarta, Indonesia.` }
+    faq: { title: "FAQ (Tanya Jawab)", content: faqText },
+    pengiriman: { title: "Kebijakan Pengiriman", content: shippingText },
+    syarat: { title: "Syarat & Ketentuan", content: termsText },
+    kontak: { title: "Hubungi Kami", content: `Kami siap melayani kebutuhan koleksi seni Anda 24/7.\nEmail: ${contactEmail}\nTelepon: ${contactPhone}\n${contactAddress}` }
   };
 
   return (

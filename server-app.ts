@@ -483,7 +483,13 @@ app.put("/api/payment-settings", async (req, res) => {
     bank2Owner, 
     qrisImage,
     whatsappNumber,
-    contactEmail
+    contactEmail,
+    contactPhone,
+    contactAddress,
+    aboutUsText,
+    faqText,
+    shippingText,
+    termsText
   } = req.body;
   
   try {
@@ -497,7 +503,13 @@ app.put("/api/payment-settings", async (req, res) => {
       bank2Owner: bank2Owner || current.bank2Owner || "",
       qrisImage: qrisImage || current.qrisImage || "",
       whatsappNumber: whatsappNumber !== undefined ? whatsappNumber : current.whatsappNumber || "",
-      contactEmail: contactEmail !== undefined ? contactEmail : current.contactEmail || "inquire@artverse.com"
+      contactEmail: contactEmail !== undefined ? contactEmail : current.contactEmail || "inquire@artverse.com",
+      contactPhone: contactPhone !== undefined ? contactPhone : current.contactPhone || "+62 811-0000-0000",
+      contactAddress: contactAddress !== undefined ? contactAddress : current.contactAddress || "Studio: SCBD, Jakarta, Indonesia.",
+      aboutUsText: aboutUsText !== undefined ? aboutUsText : current.aboutUsText || "",
+      faqText: faqText !== undefined ? faqText : current.faqText || "",
+      shippingText: shippingText !== undefined ? shippingText : current.shippingText || "",
+      termsText: termsText !== undefined ? termsText : current.termsText || ""
     };
 
     const saved = await dbRepository.updatePaymentSettings(updatedSettings);

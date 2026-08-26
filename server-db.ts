@@ -81,6 +81,12 @@ export interface PaymentSettings {
   qrisImage: string;
   whatsappNumber?: string;
   contactEmail?: string;
+  contactPhone?: string;
+  contactAddress?: string;
+  aboutUsText?: string;
+  faqText?: string;
+  shippingText?: string;
+  termsText?: string;
 }
 
 // Supabase client initialization
@@ -225,7 +231,13 @@ const defaultPaymentSettings: PaymentSettings = {
   bank2Owner: "Galeri Pratama",
   qrisImage: "https://lh3.googleusercontent.com/aida/AP1WRLvtjN7SIYTNoGyPxtES-aFpY9Ogo35dMBFSz8oAngHSTYPhWB0LsgeQOdporsqBp_Y003JG8r5xqeqYZV2s-ysxV5OLZBretXLrSYwMZEst7UqtpnGHG-1oaW-MoP9l7XA45T1g4I0DRZQevTLCWnhEgla_n7_UYZl1WZZvZPMnmgYbt9H5afXjQeHFDlU_O0liKaVZ4Ge_tZOMU2Yzcu7O-__Xl-7trrjyccQU8OW3XrZaYCwQshs_FZDk",
   whatsappNumber: "6281234567890",
-  contactEmail: "inquire@artverse.com"
+  contactEmail: "inquire@artverse.com",
+  contactPhone: "+62 811-0000-0000",
+  contactAddress: "Studio: SCBD, Jakarta, Indonesia.",
+  aboutUsText: "ArtVerse adalah galeri seni premium digital yang didirikan pada tahun 2026. Kami berdedikasi untuk menghubungkan mahakarya seniman terbaik dengan para kolektor seni dari seluruh dunia dengan kurasi yang ketat dan jaminan keaslian.",
+  faqText: "T: Apakah lukisan dilengkapi sertifikat?\nJ: Ya, setiap pembelian dilengkapi dengan Sertifikat Keaslian fisik bersertifikasi.\n\nT: Bisakah dibatalkan?\nJ: Pembatalan hanya dapat dilakukan dalam kurun waktu 24 jam setelah pembayaran.",
+  shippingText: "Kami menggunakan jasa kurir asuransi khusus seni rupa (fine-art logistics) untuk menjamin lukisan tiba dengan aman tanpa cacat. Pengiriman memakan waktu 2-5 hari untuk domestik, dan 7-14 hari untuk internasional.",
+  termsText: "Dengan mengakses, menggunakan, atau melakukan transaksi di ArtVerse, Anda dianggap telah membaca, memahami, dan menyetujui semua aturan hak cipta, perlindungan privasi, dan protokol jual beli benda seni otentik yang berlaku."
 };
 
 function loadLocalDb() {
