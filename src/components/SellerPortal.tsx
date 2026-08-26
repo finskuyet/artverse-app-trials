@@ -965,7 +965,7 @@ export default function SellerPortal({
       {activeTab === "summary" && (
         <div className="space-y-8 animate-in fade-in duration-300">
           {/* Summary Stat Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div id="seller-stat-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Stat 1 */}
             <div className={`p-6 rounded-xl flex items-center gap-5 border-l-4 border-amber-500 shadow-md ${
               isDark ? "glass-panel" : "bg-white border border-stone-200"
@@ -1037,7 +1037,7 @@ export default function SellerPortal({
 
           {/* Quick Info & Sold Painting Grid of main sales (Hasil lukisan yang dijual penjual) */}
           <div className={`rounded-xl p-6 md:p-8 ${isDark ? "glass-panel" : "bg-white border border-stone-200 shadow-sm"}`}>
-            <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b ${
+            <div id="seller-sales-actions" className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6 pb-4 border-b ${
               isDark ? "border-[#f0bf5c]/10" : "border-stone-200"
             }`}>
               <div className="flex flex-col gap-1">
@@ -1145,7 +1145,7 @@ export default function SellerPortal({
               </button>
             </div>
             
-            <div className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto ${showCatalogFilter ? 'flex' : 'hidden md:flex'}`}>
+            <div id="seller-catalog-filters" className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto ${showCatalogFilter ? 'flex' : 'hidden md:flex'}`}>
               {/* Category Filter */}
               <select
                 value={catalogCategoryFilter}
@@ -1478,9 +1478,10 @@ export default function SellerPortal({
 
             {/* Description / Makna Filosofis */}
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between">
                 <label className={`font-bold ${isDark ? "text-[#d2c5b1]" : "text-stone-700"}`}>Deskripsi &amp; Filosofi Lukisan</label>
                 <button
+                  id="seller-ai-generate"
                   type="button"
                   onClick={handleGenerateAIDescription}
                   disabled={isGeneratingDesc}
@@ -2734,6 +2735,7 @@ export default function SellerPortal({
         theme={theme}
         isOpen={showTutorial}
         onClose={() => setShowTutorial(false)}
+        onTabChange={(tab: any) => setActiveTab(tab)}
       />
     </main>
   );

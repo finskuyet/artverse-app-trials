@@ -22,13 +22,15 @@ interface TutorialGuideProps {
   onEmitMockNotification?: (title: string, msg: string, type: "order" | "payment" | "message") => void;
   isOpen: boolean;
   onClose: () => void;
+  onTabChange?: (tab: string) => void;
 }
 
 export default function SellerTutorialGuide({ 
   theme, 
   onEmitMockNotification,
   isOpen,
-  onClose
+  onClose,
+  onTabChange
 }: TutorialGuideProps) {
   const isDark = theme === "dark";
   const [currentStep, setCurrentStep] = useState(0);
@@ -40,27 +42,63 @@ export default function SellerTutorialGuide({
   const baseTourSteps = [
     {
       targetId: "seller-nav-summary",
+      tab: "summary",
       title: "Ringkasan Kinerja 📊",
       description: "Pantau keseluruhan kinerja galeri Anda secara real-time. Anda bisa melihat total karya yang dipamerkan, pesanan aktif, hingga pengunjung galeri.",
       icon: <Compass className="w-5 h-5 text-[#f0bf5c]" />,
       tooltip: "Lihat Ringkasan"
     },
     {
+      targetId: "seller-stat-cards",
+      tab: "summary",
+      title: "Statistik Real-time 📈",
+      description: "Di sini Anda bisa memantau angka metrik penting seperti jumlah karya tersedia, lukisan yang terjual, dan total omset penjualan.",
+      icon: <FileText className="w-5 h-5 text-[#f0bf5c]" />,
+      tooltip: "Pantau Angka Kinerja"
+    },
+    {
+      targetId: "seller-sales-actions",
+      tab: "summary",
+      title: "Aksi Galeri Penjualan 🧹",
+      description: "Anda bisa mereset omset (menghapus riwayat transaksi lunas) atau membersihkan daftar lukisan yang sudah terjual secara permanen di sini.",
+      icon: <FileText className="w-5 h-5 text-red-400" />,
+      tooltip: "Aksi Pembersihan"
+    },
+    {
       targetId: "seller-nav-catalog",
+      tab: "catalog",
       title: "Kelola Katalog Seni 🎨",
       description: "Atur semua karya yang Anda pamerkan di sini. Anda dapat mengubah harga, mengedit informasi lukisan, atau menghapus karya dari etalase.",
       icon: <Sparkles className="w-5 h-5 text-[#f0bf5c]" />,
       tooltip: "Atur Etalase Galeri"
     },
     {
+      targetId: "seller-catalog-filters",
+      tab: "catalog",
+      title: "Filter Pencarian 🔍",
+      description: "Gunakan filter kategori, tahun pembuatan, dan status untuk mempermudah mencari lukisan spesifik di katalog Anda.",
+      icon: <Menu className="w-5 h-5 text-[#f0bf5c]" />,
+      tooltip: "Filter Katalog Anda"
+    },
+    {
       targetId: "seller-nav-upload",
+      tab: "upload",
       title: "Unggah Lukisan Baru 📤",
       description: "Tambahkan karya seni baru ke dalam katalog galeri Anda dengan mudah. Anda juga bisa memanfaatkan AI kami untuk menulis deskripsi yang puitis dan memukau.",
       icon: <ArrowUp className="w-5 h-5 text-[#f0bf5c]" />,
       tooltip: "Tambah Karya Seni"
     },
     {
+      targetId: "seller-ai-generate",
+      tab: "upload",
+      title: "Asisten Deskripsi AI ✨",
+      description: "Ketikkan judul dan media lukisan, lalu tekan tombol ini! AI cerdas kami akan otomatis merangkaikan deskripsi yang puitis dan profesional untuk karya Anda.",
+      icon: <Sparkles className="w-5 h-5 text-[#f0bf5c]" />,
+      tooltip: "Generate dengan AI"
+    },
+    {
       targetId: "seller-nav-orders",
+      tab: "orders",
       title: "Kelola Pesanan 📦",
       description: "Lihat dan proses setiap pesanan yang masuk. Anda dapat menyetujui pesanan, memverifikasi pembayaran dari kolektor, dan melampirkan resi pengiriman.",
       icon: <ShoppingBag className="w-5 h-5 text-[#f0bf5c]" />,
@@ -68,6 +106,7 @@ export default function SellerTutorialGuide({
     },
     {
       targetId: "seller-nav-messages",
+      tab: "messages",
       title: "Pesan Inquiries 💬",
       description: "Balas semua pertanyaan dari kolektor seni tentang ketersediaan, permintaan ukuran khusus, maupun pertanyaan lainnya melalui kotak masuk ini.",
       icon: <Bell className="w-5 h-5 text-[#f0bf5c]" />,
@@ -75,6 +114,7 @@ export default function SellerTutorialGuide({
     },
     {
       targetId: "seller-nav-newsletter",
+      tab: "newsletter",
       title: "Kirim Buletin Seni 📬",
       description: "Jaga hubungan baik dengan para kolektor! Kirimkan pemberitahuan pameran atau promosi terbaru secara massal kepada semua pelanggan newsletter.",
       icon: <FileText className="w-5 h-5 text-[#f0bf5c]" />,
@@ -82,6 +122,7 @@ export default function SellerTutorialGuide({
     },
     {
       targetId: "seller-nav-settings",
+      tab: "settings",
       title: "Pengaturan Transaksi ⚙️",
       description: "Atur dan perbarui nomor rekening bank serta QRIS bisnis Anda yang sah agar pembayaran pelanggan dapat masuk dengan lancar.",
       icon: <Menu className="w-5 h-5 text-[#f0bf5c]" />,
@@ -89,6 +130,7 @@ export default function SellerTutorialGuide({
     },
     {
       targetId: "seller-nav-guide",
+      tab: "summary",
       title: "Ulangi Panduan 💡",
       description: "Kapan pun Anda lupa atau membutuhkan petunjuk, cukup tekan tombol Panduan ini untuk mengulangi tour interaktif Seller Portal ini.",
       icon: <HelpCircle className="w-5 h-5 text-emerald-400" />,
@@ -139,6 +181,11 @@ export default function SellerTutorialGuide({
 
     const currentStepData = tourSteps[currentStep];
     if (!currentStepData) return;
+
+    // Trigger tab switch when entering a new section
+    if (currentStepData.tab && onTabChange) {
+      onTabChange(currentStepData.tab);
+    }
 
     const updatePosition = () => {
       const el = findTargetElement(currentStepData.targetId);
