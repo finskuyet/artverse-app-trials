@@ -318,7 +318,9 @@ export default function TutorialGuide({
         )}
 
         {/* Guided Tour Floating popover card */}
-        <div className="fixed inset-0 pointer-events-none z-[120] flex items-end sm:items-center justify-center p-3 sm:p-4">
+        <div className={`fixed inset-0 pointer-events-none z-[120] flex sm:items-center justify-center p-3 sm:p-4 ${
+          (targetRect && targetRect.top > (typeof window !== 'undefined' ? window.innerHeight / 2 : 400)) ? "items-start pt-24" : "items-end"
+        }`}>
           <motion.div
             key={`card-${currentStep}`}
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
