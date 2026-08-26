@@ -593,9 +593,9 @@ ${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist,
       }
     }
     res.end();
-  } catch (err) {
+  } catch (err: any) {
     console.error("Error in AI Chat:", err);
-    res.status(500).json({ error: "Gagal memproses percakapan dengan AI" });
+    res.status(500).json({ error: err.message || "Gagal memproses percakapan dengan AI" });
   }
 });
 

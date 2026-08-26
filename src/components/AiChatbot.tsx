@@ -43,7 +43,15 @@ export default function AiChatbot({ theme = "dark" }: AiChatbotProps) {
       });
 
       if (!res.ok) {
-        const aiMessage: ChatMessage = { role: "model", parts: [{ text: "Maaf, saya sedang mengalami kendala jaringan. Silakan coba lagi nanti." }] };
+        let errorMsg = "Maaf, saya sedang mengalami kendala jaringan. Silakan coba lagi nanti.";
+        try {
+          const errData = await res.json();
+          if (errData.error) errorMsg = `Server Error: ${errData.error}`;
+        } catch(e) {
+          const text = await res.text();
+          errorMsg = `HTTP ${res.status}: ${text.substring(0, 50)}`;
+        }
+        const aiMessage: ChatMessage = { role: "model", parts: [{ text: errorMsg }] };
         setMessages(prev => [...prev, aiMessage]);
         setIsLoading(false);
         return;
