@@ -6,6 +6,7 @@ import CartCheckout from "./components/CartCheckout";
 import MyTransactions from "./components/MyTransactions";
 import SellerPortal from "./components/SellerPortal";
 import TutorialGuide from "./components/TutorialGuide";
+import AiChatbot from "./components/AiChatbot";
 import { Artwork, Notification } from "./types";
 import { Bell, CheckCircle, Info, MessageSquare, Sparkles, X } from "lucide-react";
 
@@ -272,6 +273,9 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* AI Chatbot Assistant for Visitors */}
+      <AiChatbot theme={theme} />
     </div>
   );
 }

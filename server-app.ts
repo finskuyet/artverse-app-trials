@@ -8,6 +8,10 @@ import {
   Notification, 
   PaymentSettings 
 } from "./server-db.js";
+import { GoogleGenAI } from "@google/genai";
+
+// Initialize Gemini
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
 const app = express();
 
@@ -547,6 +551,75 @@ app.delete("/api/newsletter/:email", async (req, res) => {
   } catch (err) {
     console.error(`Error deleting newsletter subscriber ${email}:`, err);
     res.status(500).json({ error: "Gagal menghapus pelanggan" });
+  }
+});
+
+// --- AI ENDPOINTS ---
+
+// 19. Chatbot Assistant
+app.post("/api/ai/chat", async (req, res) => {
+  const { messages } = req.body;
+  if (!messages || !Array.isArray(messages)) {
+    return res.status(400).json({ error: "Invalid messages format" });
+  }
+
+  try {
+    const artworks = await dbRepository.getArtworks();
+    const availableArtworks = artworks.filter(a => a.status === "Tersedia");
+    
+    const systemInstruction = `Kamu adalah asisten virtual untuk galeri seni bernama Artverse. 
+Tugasmu HANYA membantu pengunjung menemukan lukisan yang mereka inginkan, memberikan informasi tentang lukisan di Artverse, dan memberikan penjelasan tentang seni.
+PENTING: Jika pengguna bertanya tentang topik di luar seni, lukisan, atau galeri Artverse (misalnya coding, matematika, politik, dll), tolak dengan sopan dan beri tahu mereka bahwa Anda hanya asisten galeri seni.
+Jawab dengan ramah, profesional, dan gunakan bahasa Indonesia yang baik dan puitis bila perlu. 
+Jika pengguna bertanya tentang lukisan yang ada di galeri, rekomendasikan dari daftar lukisan yang tersedia berikut:
+${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: a.price, medium: a.medium, category: a.category, size: a.size, description: a.description })), null, 2)}`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.6-flash",
+      contents: [
+        { role: "user", parts: [{ text: systemInstruction }] },
+        { role: "model", parts: [{ text: "Baik, saya siap membantu." }] },
+        ...messages
+      ]
+    });
+
+    const reply = response.text || "Mohon maaf, saya sedang kesulitan memahami pertanyaan Anda saat ini.";
+    res.json({ reply });
+  } catch (err) {
+    console.error("Error in AI Chat:", err);
+    res.status(500).json({ error: "Gagal memproses percakapan dengan AI" });
+  }
+});
+
+// 20. Generate Description for Seller
+app.post("/api/ai/generate-description", async (req, res) => {
+  const { title, artist, category, medium } = req.body;
+  if (!title) {
+    return res.status(400).json({ error: "Judul lukisan wajib diisi" });
+  }
+
+  try {
+    const prompt = `Buatkan deskripsi lukisan yang puitis, profesional, dan menawan untuk dijual di galeri seni premium.
+Deskripsi ini harus menjelaskan makna filosofis yang mungkin terkandung di dalamnya.
+
+Detail Lukisan:
+Judul: ${title}
+Seniman: ${artist || "Anonim"}
+Kategori/Aliran: ${category || "Tidak diketahui"}
+Medium: ${medium || "Tidak diketahui"}
+
+Berikan hanya paragraf deskripsi tanpa kata pengantar atau penutup. Maksimal 3-4 kalimat panjang.`;
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.6-flash",
+      contents: prompt
+    });
+
+    const description = response.text?.trim() || "";
+    res.json({ description });
+  } catch (err) {
+    console.error("Error in AI Generate Description:", err);
+    res.status(500).json({ error: "Gagal membuat deskripsi dengan AI" });
   }
 });
 

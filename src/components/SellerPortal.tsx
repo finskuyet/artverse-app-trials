@@ -64,6 +64,7 @@ export default function SellerPortal({
   const [uploadFileName, setUploadFileName] = useState("");
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadError, setUploadError] = useState("");
+  const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
 
   // Edit/Zoom Modal States
   const [zoomReceiptUrl, setZoomReceiptUrl] = useState<string | null>(null);
@@ -269,6 +270,35 @@ export default function SellerPortal({
     } catch (err) {
       console.error("Upload error", err);
       setUploadError("Gagal menghubungi server untuk mengunggah.");
+    }
+  };
+
+  const handleGenerateAIDescription = async () => {
+    if (!title.trim()) {
+      setUploadError("Harap isi 'Judul Lukisan' terlebih dahulu untuk dibuatkan deskripsi.");
+      return;
+    }
+    
+    setIsGeneratingDesc(true);
+    setUploadError("");
+    try {
+      const res = await fetch("/api/ai/generate-description", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, artist, category, medium })
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        setDescription(data.description);
+      } else {
+        setUploadError("Gagal menghasilkan deskripsi dari AI.");
+      }
+    } catch (err) {
+      console.error("AI Generation error:", err);
+      setUploadError("Gagal menghubungi server AI.");
+    } finally {
+      setIsGeneratingDesc(false);
     }
   };
 
@@ -1271,7 +1301,24 @@ export default function SellerPortal({
 
             {/* Description / Makna Filosofis */}
             <div className="space-y-2">
-              <label className={`font-bold ${isDark ? "text-[#d2c5b1]" : "text-stone-700"}`}>Deskripsi &amp; Filosofi Lukisan</label>
+              <div className="flex justify-between items-center">
+                <label className={`font-bold ${isDark ? "text-[#d2c5b1]" : "text-stone-700"}`}>Deskripsi &amp; Filosofi Lukisan</label>
+                <button
+                  type="button"
+                  onClick={handleGenerateAIDescription}
+                  disabled={isGeneratingDesc}
+                  className={`text-[10px] font-bold uppercase tracking-wider px-3 py-1.5 rounded-full flex items-center gap-1 transition-all border shadow-sm cursor-pointer ${
+                    isGeneratingDesc 
+                      ? "bg-stone-500/10 text-stone-500 border-stone-500/20 cursor-not-allowed"
+                      : isDark
+                        ? "bg-[#f0bf5c]/10 text-[#f0bf5c] border-[#f0bf5c]/30 hover:bg-[#f0bf5c]/20"
+                        : "bg-[#c89b3c]/10 text-[#c89b3c] border-[#c89b3c]/30 hover:bg-[#c89b3c]/20"
+                  }`}
+                >
+                  {isGeneratingDesc ? <Loader2 size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                  <span>{isGeneratingDesc ? "Menganalisis..." : "Buat dengan AI"}</span>
+                </button>
+              </div>
               <textarea
                 rows={4}
                 value={description}
