@@ -42,18 +42,41 @@ export default function AiChatbot({ theme = "dark" }: AiChatbotProps) {
         body: JSON.stringify({ messages: newMessages })
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const aiMessage: ChatMessage = { role: "model", parts: [{ text: data.reply }] };
-        setMessages(prev => [...prev, aiMessage]);
-      } else {
+      if (!res.ok) {
         const aiMessage: ChatMessage = { role: "model", parts: [{ text: "Maaf, saya sedang mengalami kendala jaringan. Silakan coba lagi nanti." }] };
         setMessages(prev => [...prev, aiMessage]);
+        setIsLoading(false);
+        return;
+      }
+
+      // Start streaming response
+      const reader = res.body?.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let fullText = "";
+
+      // Add empty AI message placeholder
+      setMessages(prev => [...prev, { role: "model", parts: [{ text: "" }] }]);
+      setIsLoading(false); // Disable loading spinner since we are starting to receive text
+
+      if (reader) {
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          
+          const chunk = decoder.decode(value, { stream: true });
+          fullText += chunk;
+
+          // Safely append to the last message
+          setMessages(prev => {
+            const updated = [...prev];
+            updated[updated.length - 1].parts[0].text = fullText;
+            return updated;
+          });
+        }
       }
     } catch (err) {
       const aiMessage: ChatMessage = { role: "model", parts: [{ text: "Terjadi kesalahan saat menghubungi server." }] };
       setMessages(prev => [...prev, aiMessage]);
-    } finally {
       setIsLoading(false);
     }
   };

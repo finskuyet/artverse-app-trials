@@ -572,9 +572,13 @@ Tugasmu HANYA membantu pengunjung menemukan lukisan yang mereka inginkan, member
 PENTING: Jika pengguna bertanya tentang topik di luar seni, lukisan, atau galeri Artverse (misalnya coding, matematika, politik, dll), tolak dengan sopan dan beri tahu mereka bahwa Anda hanya asisten galeri seni.
 Jawab dengan ramah, profesional, dan gunakan bahasa Indonesia yang baik dan puitis bila perlu. 
 Jika pengguna bertanya tentang lukisan yang ada di galeri, rekomendasikan dari daftar lukisan yang tersedia berikut:
-${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: a.price, medium: a.medium, category: a.category, size: a.size, description: a.description })), null, 2)}`;
+${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: a.price, category: a.category })), null, 2)}`;
 
-    const response = await ai.models.generateContent({
+    // Set headers for Server-Sent Events (SSE) / Streaming
+    res.setHeader("Content-Type", "text/plain; charset=utf-8");
+    res.setHeader("Transfer-Encoding", "chunked");
+
+    const responseStream = await ai.models.generateContentStream({
       model: "gemini-3.6-flash",
       contents: [
         { role: "user", parts: [{ text: systemInstruction }] },
@@ -583,8 +587,12 @@ ${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist,
       ]
     });
 
-    const reply = response.text || "Mohon maaf, saya sedang kesulitan memahami pertanyaan Anda saat ini.";
-    res.json({ reply });
+    for await (const chunk of responseStream) {
+      if (chunk.text) {
+        res.write(chunk.text);
+      }
+    }
+    res.end();
   } catch (err) {
     console.error("Error in AI Chat:", err);
     res.status(500).json({ error: "Gagal memproses percakapan dengan AI" });
