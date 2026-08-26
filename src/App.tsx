@@ -30,7 +30,7 @@ export default function App() {
 
   // Load initial cart, theme, and seller state from localStorage
   useEffect(() => {
-    const cached = localStorage.getItem("artverse_cart");
+    const cached = localStorage.getItem("finszart_cart");
     if (cached) {
       try {
         setCart(JSON.parse(cached));
@@ -39,18 +39,18 @@ export default function App() {
       }
     }
     
-    const cachedTheme = localStorage.getItem("artverse_theme") as "dark" | "light";
+    const cachedTheme = localStorage.getItem("finszart_theme") as "dark" | "light";
     if (cachedTheme) {
       setTheme(cachedTheme);
     }
 
-    const cachedSeller = localStorage.getItem("artverse_seller_auth");
+    const cachedSeller = localStorage.getItem("finszart_seller_auth");
     if (cachedSeller === "true") {
       setIsSeller(true);
     }
 
     // Launch tutorial automatically if never completed before
-    const isCompleted = localStorage.getItem("artverse_tutorial_completed");
+    const isCompleted = localStorage.getItem("finszart_tutorial_completed");
     if (isCompleted !== "true") {
       setIsTutorialOpen(true);
     }
@@ -71,13 +71,13 @@ export default function App() {
   const toggleTheme = () => {
     const nextTheme = theme === "dark" ? "light" : "dark";
     setTheme(nextTheme);
-    localStorage.setItem("artverse_theme", nextTheme);
+    localStorage.setItem("finszart_theme", nextTheme);
   };
 
   // Sync cart to localStorage
   const syncCartToStorage = (newCart: Artwork[]) => {
     setCart(newCart);
-    localStorage.setItem("artverse_cart", JSON.stringify(newCart));
+    localStorage.setItem("finszart_cart", JSON.stringify(newCart));
   };
 
   const addToCart = (artwork: Artwork) => {
@@ -228,7 +228,7 @@ export default function App() {
             isSeller={isSeller}
             onSellerAuthChange={(val) => {
               setIsSeller(val);
-              localStorage.setItem("artverse_seller_auth", val ? "true" : "false");
+              localStorage.setItem("finszart_seller_auth", val ? "true" : "false");
             }}
           />
         )}

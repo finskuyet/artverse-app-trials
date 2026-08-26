@@ -235,16 +235,16 @@ const defaultPaymentSettings: PaymentSettings = {
   bank2Owner: "Galeri Pratama",
   qrisImage: "https://lh3.googleusercontent.com/aida/AP1WRLvtjN7SIYTNoGyPxtES-aFpY9Ogo35dMBFSz8oAngHSTYPhWB0LsgeQOdporsqBp_Y003JG8r5xqeqYZV2s-ysxV5OLZBretXLrSYwMZEst7UqtpnGHG-1oaW-MoP9l7XA45T1g4I0DRZQevTLCWnhEgla_n7_UYZl1WZZvZPMnmgYbt9H5afXjQeHFDlU_O0liKaVZ4Ge_tZOMU2Yzcu7O-__Xl-7trrjyccQU8OW3XrZaYCwQshs_FZDk",
   whatsappNumber: "6281234567890",
-  contactEmail: "inquire@artverse.com",
+  contactEmail: "inquire@finszart.com",
   contactPhone: "+62 811-0000-0000",
   contactAddress: "Studio: SCBD, Jakarta, Indonesia.",
-  aboutUsText: "ArtVerse adalah galeri seni premium digital yang didirikan pada tahun 2026. Kami berdedikasi untuk menghubungkan mahakarya seniman terbaik dengan para kolektor seni dari seluruh dunia dengan kurasi yang ketat dan jaminan keaslian.",
+  aboutUsText: "Finszart adalah galeri seni premium digital yang didirikan pada tahun 2026. Kami berdedikasi untuk menghubungkan mahakarya seniman terbaik dengan para kolektor seni dari seluruh dunia dengan kurasi yang ketat dan jaminan keaslian.",
   faqText: "T: Apakah lukisan dilengkapi sertifikat?\nJ: Ya, setiap pembelian dilengkapi dengan Sertifikat Keaslian fisik bersertifikasi.\n\nT: Bisakah dibatalkan?\nJ: Pembatalan hanya dapat dilakukan dalam kurun waktu 24 jam setelah pembayaran.",
   shippingText: "Kami menggunakan jasa kurir asuransi khusus seni rupa (fine-art logistics) untuk menjamin lukisan tiba dengan aman tanpa cacat. Pengiriman memakan waktu 2-5 hari untuk domestik, dan 7-14 hari untuk internasional.",
-  termsText: "Dengan mengakses, menggunakan, atau melakukan transaksi di ArtVerse, Anda dianggap telah membaca, memahami, dan menyetujui semua aturan hak cipta, perlindungan privasi, dan protokol jual beli benda seni otentik yang berlaku.",
+  termsText: "Dengan mengakses, menggunakan, atau melakukan transaksi di Finszart, Anda dianggap telah membaca, memahami, dan menyetujui semua aturan hak cipta, perlindungan privasi, dan protokol jual beli benda seni otentik yang berlaku.",
   footerDescription: "Menghubungkan kolektor elit dengan mahakarya seniman terbaik melalui platform digital yang terkurasi dengan sempurna.",
   galleryText: "Koleksi kami mencakup ratusan lukisan otentik dari berbagai aliran mulai dari Realisme klasik hingga Abstrak kontemporer. Anda dapat menjelajahi keseluruhan katalog kami langsung dari Halaman Utama.",
-  artistText: "Saat ini ArtVerse telah bekerja sama secara eksklusif dengan lebih dari 50 pelukis maestro dan seniman muda berbakat dari kancah lokal maupun internasional.",
+  artistText: "Saat ini Finszart telah bekerja sama secara eksklusif dengan lebih dari 50 pelukis maestro dan seniman muda berbakat dari kancah lokal maupun internasional.",
   exhibitionText: "Fitur Pameran 3D Virtual interaktif saat ini sedang dalam tahap pengembangan akhir oleh tim insinyur kami. Segera hadir untuk memberikan Anda pengalaman menjelajah galeri secara imersif dari rumah!"
 };
 

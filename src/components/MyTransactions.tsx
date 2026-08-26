@@ -500,7 +500,7 @@ export default function MyTransactions({ searchContact, setSearchContact, theme 
                               }`}>
                                 <span className="block font-bold text-[10px] mb-1 flex items-center gap-1">
                                   <Check size={10} className={isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"} />
-                                  <span className={isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"}>BALASAN PENJUAL (ARTVERSE) - {repliedDate}</span>
+                                  <span className={isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"}>BALASAN PENJUAL (FINSZART) - {repliedDate}</span>
                                 </span>
                                 {msg.replyText}
                               </div>

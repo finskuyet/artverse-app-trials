@@ -507,7 +507,7 @@ app.put("/api/payment-settings", async (req, res) => {
       bank2Owner: bank2Owner || current.bank2Owner || "",
       qrisImage: qrisImage || current.qrisImage || "",
       whatsappNumber: whatsappNumber !== undefined ? whatsappNumber : current.whatsappNumber || "",
-      contactEmail: contactEmail !== undefined ? contactEmail : current.contactEmail || "inquire@artverse.com",
+      contactEmail: contactEmail !== undefined ? contactEmail : current.contactEmail || "inquire@finszart.com",
       contactPhone: contactPhone !== undefined ? contactPhone : current.contactPhone || "+62 811-0000-0000",
       contactAddress: contactAddress !== undefined ? contactAddress : current.contactAddress || "Studio: SCBD, Jakarta, Indonesia.",
       aboutUsText: aboutUsText !== undefined ? aboutUsText : current.aboutUsText || "",
@@ -587,9 +587,9 @@ app.post("/api/ai/chat", async (req, res) => {
     const artworks = await dbRepository.getArtworks();
     const availableArtworks = artworks.filter(a => a.status === "Tersedia");
     
-    const systemInstruction = `Kamu adalah asisten virtual untuk galeri seni bernama Artverse. 
-Tugasmu HANYA membantu pengunjung menemukan lukisan yang mereka inginkan, memberikan informasi tentang lukisan di Artverse, dan memberikan penjelasan tentang seni.
-PENTING: Jika pengguna bertanya tentang topik di luar seni, lukisan, atau galeri Artverse (misalnya coding, matematika, politik, dll), tolak dengan sopan dan beri tahu mereka bahwa Anda hanya asisten galeri seni.
+    const systemInstruction = `Kamu adalah asisten virtual untuk galeri seni bernama Finszart. 
+Tugasmu HANYA membantu pengunjung menemukan lukisan yang mereka inginkan, memberikan informasi tentang lukisan di Finszart, dan memberikan penjelasan tentang seni.
+PENTING: Jika pengguna bertanya tentang topik di luar seni, lukisan, atau galeri Finszart (misalnya coding, matematika, politik, dll), tolak dengan sopan dan beri tahu mereka bahwa Anda hanya asisten galeri seni.
 Jawab dengan ramah, profesional, dan gunakan bahasa Indonesia yang baik dan puitis bila perlu. 
 Jika pengguna bertanya tentang lukisan yang ada di galeri, rekomendasikan dari daftar lukisan yang tersedia berikut:
 ${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: a.price, category: a.category })), null, 2)}`;

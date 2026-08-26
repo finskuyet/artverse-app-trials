@@ -243,7 +243,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
           <p className={`text-xs font-bold tracking-[0.3em] uppercase mb-3 animate-pulse ${
             isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"
           }`}>
-            ARTVERSE EXHIBITION
+            FINSZART EXHIBITION
           </p>
           <h1 className={`font-display text-4xl md:text-5xl font-bold mb-4 tracking-tight ${
             isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"
@@ -538,7 +538,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
                       {/* Explicit Direct WhatsApp Button for cross-device support (important on mobile where hover is absent) */}
                       <a
                         href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-                          `Halo ARTVERSE, saya tertarik dengan karya seni "${art.title}" oleh ${art.artist}. Apakah karya ini masih tersedia?`
+                          `Halo FINSZART, saya tertarik dengan karya seni "${art.title}" oleh ${art.artist}. Apakah karya ini masih tersedia?`
                         )}`}
                         target="_blank"
                         rel="noreferrer"
@@ -820,7 +820,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
                   {/* Option B: Direct WhatsApp Button */}
                   <a
                     href={`https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
-                      `Halo ARTVERSE, saya tertarik dengan karya seni "${selectedArtwork.title}" oleh ${selectedArtwork.artist}. Apakah karya ini masih tersedia?`
+                      `Halo FINSZART, saya tertarik dengan karya seni "${selectedArtwork.title}" oleh ${selectedArtwork.artist}. Apakah karya ini masih tersedia?`
                     )}`}
                     target="_blank"
                     rel="noreferrer"

@@ -66,7 +66,7 @@ export default function Navbar({
             isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"
           }`}
         >
-          ARTVERSE
+          FINSZART
         </div>
 
         {/* Desktop Navigation links */}
