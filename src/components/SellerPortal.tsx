@@ -166,7 +166,7 @@ export default function SellerPortal({
       const newsData = await newsRes.json();
 
       setStats(statsData);
-      setArtworks(artData);
+      setArtworks(Array.isArray(artData) ? artData : []);
       setOrders(ordersData);
       setMessages(msgData);
       setNewsletterSubs(Array.isArray(newsData) ? newsData : []);
@@ -769,8 +769,9 @@ export default function SellerPortal({
     );
   }
 
-  const uniqueCategories = Array.from(new Set(artworks.map(a => a.category).filter(Boolean))).sort();
-  const uniqueYears = Array.from(new Set(artworks.map(a => a.year).filter(Boolean))).sort().reverse();
+  const safeArtworks = Array.isArray(artworks) ? artworks : [];
+  const uniqueCategories = Array.from(new Set(safeArtworks.map(a => a?.category).filter(Boolean))).sort();
+  const uniqueYears = Array.from(new Set(safeArtworks.map(a => a?.year).filter(Boolean))).sort().reverse();
 
   return (
     <main className={`pt-28 pb-24 px-6 md:px-12 max-w-7xl mx-auto min-h-screen transition-colors duration-300 ${
@@ -1200,15 +1201,16 @@ export default function SellerPortal({
               <tbody className={`divide-y ${
                 isDark ? "divide-[#f0bf5c]/5 text-[#ebe1d6]" : "divide-stone-100 text-stone-800"
               }`}>
-                {artworks
+                {safeArtworks
                   .filter((art) => {
+                    if (!art) return false;
                     const matchCategory = catalogCategoryFilter === "Kategori" || art.category === catalogCategoryFilter;
                     // For year filter: handle "Lama" correctly if year < 2022
                     let matchYear = catalogYearFilter === "Tahun" || art.year === catalogYearFilter;
                     return matchCategory && matchYear;
                   })
                   .map((art) => (
-                    <tr key={art.id} className={isDark ? "hover:bg-[#ebe1d6]/5 transition-colors" : "hover:bg-stone-50 transition-colors"}>
+                    <tr key={art?.id || Math.random()} className={isDark ? "hover:bg-[#ebe1d6]/5 transition-colors" : "hover:bg-stone-50 transition-colors"}>
                     <td className="p-4 flex items-center gap-3">
                       <div className={`w-10 h-12 rounded overflow-hidden flex-shrink-0 border ${
                         isDark ? "bg-black border-[#f0bf5c]/10" : "bg-white border-stone-200"
@@ -1224,11 +1226,11 @@ export default function SellerPortal({
                       <span className={`font-bold block ${isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"}`}>{art.category}</span>
                       <span className={`text-[10px] ${isDark ? "text-[#9b8f7d]" : "text-stone-400"}`}>{art.year}</span>
                     </td>
-                    <td className={`p-4 font-bold ${isDark ? "text-white" : "text-stone-900"}`}>Rp {art.price.toLocaleString("id-ID")}</td>
+                    <td className={`p-4 font-bold ${isDark ? "text-white" : "text-stone-900"}`}>Rp {art?.price ? art.price.toLocaleString("id-ID") : "0"}</td>
                     <td className="p-4">
                       {/* Interactive inline toggle select */}
                       <select
-                        value={art.status}
+                        value={art?.status || "Tersedia"}
                         onChange={(e) => handleUpdateArtworkStatus(art.id, e.target.value)}
                         className={`text-xs font-bold rounded px-2.5 py-1.5 outline-none cursor-pointer border ${
                           isDark 
