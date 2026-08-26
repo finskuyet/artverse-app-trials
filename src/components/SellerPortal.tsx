@@ -939,6 +939,20 @@ export default function SellerPortal({
       {/* Tab 1: Summary */}
       {activeTab === "summary" && (
         <div className="space-y-8 animate-in fade-in duration-300">
+          <div className={`p-5 rounded-xl flex items-start gap-4 border shadow-sm ${
+            isDark ? "bg-[#f0bf5c]/5 border-[#f0bf5c]/20" : "bg-indigo-50 border-indigo-100"
+          }`}>
+            <div className={`p-2 rounded-lg shrink-0 ${isDark ? "bg-[#f0bf5c]/10 text-[#f0bf5c]" : "bg-indigo-100 text-indigo-600"}`}>
+              <AlertCircle size={18} />
+            </div>
+            <div>
+              <h3 className={`font-bold text-sm mb-1 ${isDark ? "text-[#f0bf5c]" : "text-indigo-800"}`}>Panduan Ringkasan Kinerja</h3>
+              <p className={`text-xs leading-relaxed ${isDark ? "text-[#d2c5b1]" : "text-indigo-700/80"}`}>
+                Pantau seluruh metrik kinerja galeri Anda secara menyeluruh di sini. Semua angka penjualan, pesanan, dan pengunjung diperbarui secara <i>real-time</i> setiap kali ada aktivitas baru.
+              </p>
+            </div>
+          </div>
+
           {/* Summary Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Stat 1 */}
@@ -1103,6 +1117,19 @@ export default function SellerPortal({
         <div className={`rounded-xl overflow-hidden shadow-xl animate-in fade-in duration-300 border ${
           isDark ? "glass-panel border-[#f0bf5c]/10" : "bg-white border-stone-200"
         }`}>
+          <div className={`m-6 p-5 rounded-xl flex items-start gap-4 border shadow-sm ${
+            isDark ? "bg-[#f0bf5c]/5 border-[#f0bf5c]/20" : "bg-emerald-50 border-emerald-100"
+          }`}>
+            <div className={`p-2 rounded-lg shrink-0 ${isDark ? "bg-[#f0bf5c]/10 text-[#f0bf5c]" : "bg-emerald-100 text-emerald-600"}`}>
+              <AlertCircle size={18} />
+            </div>
+            <div>
+              <h3 className={`font-bold text-sm mb-1 ${isDark ? "text-[#f0bf5c]" : "text-emerald-800"}`}>Panduan Kelola Katalog</h3>
+              <p className={`text-xs leading-relaxed ${isDark ? "text-[#d2c5b1]" : "text-emerald-700/80"}`}>
+                Gunakan halaman ini untuk mengatur etalase karya seni Anda. Anda dapat menggunakan tombol Edit (✏️) pada kolom aksi untuk mengubah informasi/harga lukisan, menghapus karya, atau menambah karya baru.
+              </p>
+            </div>
+          </div>
           <div className={`p-6 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${
             isDark ? "border-[#f0bf5c]/10 bg-[#1f1b14]/50" : "border-stone-200 bg-stone-50"
           }`}>
@@ -1280,6 +1307,19 @@ export default function SellerPortal({
         <div className={`max-w-3xl mx-auto rounded-xl p-8 shadow-xl animate-in fade-in duration-300 border ${
           isDark ? "glass-panel border-[#f0bf5c]/10" : "bg-white border-stone-200"
         }`}>
+          <div className={`mb-8 p-5 rounded-xl flex items-start gap-4 border shadow-sm ${
+            isDark ? "bg-[#f0bf5c]/5 border-[#f0bf5c]/20" : "bg-blue-50 border-blue-100"
+          }`}>
+            <div className={`p-2 rounded-lg shrink-0 ${isDark ? "bg-[#f0bf5c]/10 text-[#f0bf5c]" : "bg-blue-100 text-blue-600"}`}>
+              <AlertCircle size={18} />
+            </div>
+            <div>
+              <h3 className={`font-bold text-sm mb-1 ${isDark ? "text-[#f0bf5c]" : "text-blue-800"}`}>Panduan Unggah Karya</h3>
+              <p className={`text-xs leading-relaxed ${isDark ? "text-[#d2c5b1]" : "text-blue-700/80"}`}>
+                Isi detail karya seni Anda dengan lengkap dan menarik. Fitur <b>Generate dengan AI</b> dapat membantu Anda membuat deskripsi estetis secara otomatis. Pastikan foto lukisan terlihat terang dan jelas.
+              </p>
+            </div>
+          </div>
           <div className={`flex items-center gap-3 border-b pb-4 mb-6 ${
             isDark ? "border-[#f0bf5c]/10" : "border-stone-200"
           }`}>
@@ -1562,6 +1602,19 @@ export default function SellerPortal({
         <div className={`rounded-xl overflow-hidden shadow-xl animate-in fade-in duration-300 border ${
           isDark ? "glass-panel border-[#f0bf5c]/10" : "bg-white border-stone-200"
         }`}>
+          <div className={`m-6 p-5 rounded-xl flex items-start gap-4 border shadow-sm ${
+            isDark ? "bg-[#f0bf5c]/5 border-[#f0bf5c]/20" : "bg-purple-50 border-purple-100"
+          }`}>
+            <div className={`p-2 rounded-lg shrink-0 ${isDark ? "bg-[#f0bf5c]/10 text-[#f0bf5c]" : "bg-purple-100 text-purple-600"}`}>
+              <AlertCircle size={18} />
+            </div>
+            <div>
+              <h3 className={`font-bold text-sm mb-1 ${isDark ? "text-[#f0bf5c]" : "text-purple-800"}`}>Panduan Pesanan Masuk</h3>
+              <p className={`text-xs leading-relaxed ${isDark ? "text-[#d2c5b1]" : "text-purple-700/80"}`}>
+                Kelola semua transaksi yang masuk dari pembeli. Anda dapat menyetujui pesanan, memantau bukti transfer yang dilampirkan oleh pembeli, dan mengunggah bukti resi pengiriman setelah lukisan dikirim.
+              </p>
+            </div>
+          </div>
           <div className={`p-6 border-b flex justify-between items-center ${
             isDark ? "border-[#f0bf5c]/10 bg-[#1f1b14]/50" : "border-stone-200 bg-stone-50"
           }`}>
@@ -1812,6 +1865,19 @@ export default function SellerPortal({
         <div className={`rounded-xl overflow-hidden shadow-xl animate-in fade-in duration-300 border ${
           isDark ? "glass-panel border-[#f0bf5c]/10" : "bg-white border-stone-200"
         }`}>
+          <div className={`m-6 p-5 rounded-xl flex items-start gap-4 border shadow-sm ${
+            isDark ? "bg-[#f0bf5c]/5 border-[#f0bf5c]/20" : "bg-pink-50 border-pink-100"
+          }`}>
+            <div className={`p-2 rounded-lg shrink-0 ${isDark ? "bg-[#f0bf5c]/10 text-[#f0bf5c]" : "bg-pink-100 text-pink-600"}`}>
+              <AlertCircle size={18} />
+            </div>
+            <div>
+              <h3 className={`font-bold text-sm mb-1 ${isDark ? "text-[#f0bf5c]" : "text-pink-800"}`}>Panduan Kotak Masuk (Inquiries)</h3>
+              <p className={`text-xs leading-relaxed ${isDark ? "text-[#d2c5b1]" : "text-pink-700/80"}`}>
+                Pesan dari pengunjung (seperti pertanyaan tentang harga, ketersediaan, atau permintaan karya khusus) akan masuk ke sini. Anda dapat langsung membalas pertanyaan mereka melalui tombol Balas.
+              </p>
+            </div>
+          </div>
           <div className={`p-6 border-b ${
             isDark ? "border-[#f0bf5c]/10 bg-[#1f1b14]/50" : "border-stone-200 bg-stone-50"
           }`}>
@@ -1990,6 +2056,19 @@ export default function SellerPortal({
       {/* Tab Newsletter */}
       {activeTab === "newsletter" && (
         <div className="space-y-8 animate-in fade-in duration-300">
+          <div className={`p-5 rounded-xl flex items-start gap-4 border shadow-sm ${
+            isDark ? "bg-[#f0bf5c]/5 border-[#f0bf5c]/20" : "bg-amber-50 border-amber-100"
+          }`}>
+            <div className={`p-2 rounded-lg shrink-0 ${isDark ? "bg-[#f0bf5c]/10 text-[#f0bf5c]" : "bg-amber-100 text-amber-600"}`}>
+              <AlertCircle size={18} />
+            </div>
+            <div>
+              <h3 className={`font-bold text-sm mb-1 ${isDark ? "text-[#f0bf5c]" : "text-amber-800"}`}>Panduan Buletin Seni (Newsletter)</h3>
+              <p className={`text-xs leading-relaxed ${isDark ? "text-[#d2c5b1]" : "text-amber-700/80"}`}>
+                Kirim informasi pameran atau promosi karya terbaru kepada seluruh pengunjung yang berlangganan newsletter Anda hanya dengan satu klik melalui fitur Email Broadcast.
+              </p>
+            </div>
+          </div>
           <div className={`p-6 rounded-xl border shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${
             isDark ? "glass-panel" : "bg-white border border-stone-200"
           }`}>
@@ -2084,6 +2163,19 @@ export default function SellerPortal({
       {/* Tab 6: Settings */}
       {activeTab === "settings" && (
         <div className="space-y-8 animate-in fade-in duration-300">
+          <div className={`p-5 rounded-xl flex items-start gap-4 border shadow-sm ${
+            isDark ? "bg-[#f0bf5c]/5 border-[#f0bf5c]/20" : "bg-rose-50 border-rose-100"
+          }`}>
+            <div className={`p-2 rounded-lg shrink-0 ${isDark ? "bg-[#f0bf5c]/10 text-[#f0bf5c]" : "bg-rose-100 text-rose-600"}`}>
+              <AlertCircle size={18} />
+            </div>
+            <div>
+              <h3 className={`font-bold text-sm mb-1 ${isDark ? "text-[#f0bf5c]" : "text-rose-800"}`}>Panduan Pengaturan Transaksi</h3>
+              <p className={`text-xs leading-relaxed ${isDark ? "text-[#d2c5b1]" : "text-rose-700/80"}`}>
+                Atur informasi pembayaran yang sah (Rekening & QRIS) serta kontak informasi yang akan ditampilkan secara publik kepada pengunjung galeri yang ingin melakukan transaksi.
+              </p>
+            </div>
+          </div>
           <div className={`p-6 rounded-xl border shadow-md ${
             isDark ? "glass-panel" : "bg-white border border-stone-200"
           }`}>
