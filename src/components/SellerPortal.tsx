@@ -255,9 +255,9 @@ export default function SellerPortal({
     setCategory(art.category);
     setYear(art.year);
     setSize(art.size);
-    setMedium(art.medium);
-    setPrice(art.price.toString());
-    setStatus(art.status);
+    setMedium(art?.medium || "Tidak ditentukan");
+    setPrice(art?.price ? art.price.toString() : "0");
+    setStatus(art?.status || "Tersedia");
     setDescription(art.description);
     setUploadImage(art.image);
     setUploadFileName("Gambar saat ini (Biarkan jika tidak ingin diubah)");
