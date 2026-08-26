@@ -229,6 +229,7 @@ export default function AiChatbot({ theme = "dark" }: AiChatbotProps) {
 
       {/* Floating Button */}
       <button
+        id="ai-chatbot-btn"
         onClick={() => setIsOpen(!isOpen)}
         className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 ${
           isOpen

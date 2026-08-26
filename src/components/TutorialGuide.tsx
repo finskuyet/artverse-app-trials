@@ -74,6 +74,13 @@ export default function TutorialGuide({
       tooltip: "Ganti Mode Gelap / Terang"
     },
     {
+      targetId: "ai-chatbot-btn",
+      title: "Asisten AI Artverse ✨",
+      description: "Punya pertanyaan tentang lukisan? Ketuk ikon ini untuk mengobrol dengan asisten kecerdasan buatan kami. AI ini bisa merekomendasikan karya dan menjelaskan filosofi seni!",
+      icon: <Sparkles className="w-5 h-5 text-[#f0bf5c]" />,
+      tooltip: "Ngobrol dengan AI"
+    },
+    {
       targetId: "nav-guide",
       title: "Pusat Panduan Tour 💡",
       description: "Kapan pun Anda membutuhkan penjelasan tentang fitur-fitur galeri virtual Artverse kembali, Anda selalu dapat menekan tombol Panduan ini untuk mengulangi tour interaktif.",
