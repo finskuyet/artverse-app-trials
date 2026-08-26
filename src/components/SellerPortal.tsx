@@ -3,6 +3,8 @@ import { Lock, Sparkles, TrendingUp, DollarSign, Image as ImageIcon, Plus, Check
 import { Artwork, Order, Message } from "../types";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
+import SellerTutorialGuide from "./SellerTutorialGuide";
+
 const INDONESIAN_BANKS = [
   "BCA",
   "Mandiri",
@@ -33,6 +35,9 @@ export default function SellerPortal({
   const setIsAuthenticated = onSellerAuthChange;
   const [accessToken, setAccessToken] = useState("");
   const [loginError, setLoginError] = useState("");
+
+  // Tutorial State
+  const [showTutorial, setShowTutorial] = useState(false);
 
   // Dashboard state
   const [activeTab, setActiveTab] = useState<"summary" | "catalog" | "upload" | "orders" | "messages" | "settings" | "newsletter">("summary");
@@ -814,7 +819,20 @@ export default function SellerPortal({
             }`}
           >
             <Lock size={14} />
-            <span>Keluar Portal</span>
+            <span>Keluar</span>
+          </button>
+
+          <button
+            id="seller-nav-guide"
+            onClick={() => setShowTutorial(true)}
+            className={`px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-2 transition-all cursor-pointer border shadow-sm ${
+              isDark 
+                ? "bg-emerald-900/40 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20 hover:border-emerald-500" 
+                : "bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-300"
+            }`}
+          >
+            <Sparkles size={14} />
+            <span>Panduan</span>
           </button>
         </div>
       </div>
@@ -824,6 +842,7 @@ export default function SellerPortal({
         isDark ? "border-[#f0bf5c]/10" : "border-stone-200"
       }`}>
         <button
+          id="seller-nav-summary"
           onClick={() => setActiveTab("summary")}
           className={`px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all border ${
             activeTab === "summary"
@@ -839,6 +858,7 @@ export default function SellerPortal({
         </button>
 
         <button
+          id="seller-nav-catalog"
           onClick={() => setActiveTab("catalog")}
           className={`px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all border ${
             activeTab === "catalog"
@@ -854,6 +874,7 @@ export default function SellerPortal({
         </button>
 
         <button
+          id="seller-nav-upload"
           onClick={() => setActiveTab("upload")}
           className={`px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all border ${
             activeTab === "upload"
@@ -869,6 +890,7 @@ export default function SellerPortal({
         </button>
 
         <button
+          id="seller-nav-orders"
           onClick={() => setActiveTab("orders")}
           className={`px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all relative border ${
             activeTab === "orders"
@@ -889,6 +911,7 @@ export default function SellerPortal({
         </button>
 
         <button
+          id="seller-nav-messages"
           onClick={() => setActiveTab("messages")}
           className={`px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all border ${
             activeTab === "messages"
@@ -904,6 +927,7 @@ export default function SellerPortal({
         </button>
 
         <button
+          id="seller-nav-newsletter"
           onClick={() => setActiveTab("newsletter")}
           className={`px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all border ${
             activeTab === "newsletter"
@@ -919,6 +943,7 @@ export default function SellerPortal({
         </button>
 
         <button
+          id="seller-nav-settings"
           onClick={() => setActiveTab("settings")}
           className={`px-4 py-3 text-xs font-bold uppercase tracking-wider rounded-lg transition-all border ${
             activeTab === "settings"
@@ -2665,28 +2690,28 @@ export default function SellerPortal({
                     />
                   </div>
                 </div>
-              </div>
 
-              {/* Submit Button */}
-              <div className="flex justify-end pt-2">
-                <button
-                  type="submit"
-                  disabled={savingSettings}
-                  className={`px-6 py-3 rounded-lg font-bold text-xs tracking-wider uppercase transition-all shadow-lg flex items-center gap-2 cursor-pointer ${
-                    savingSettings
-                      ? "bg-stone-700 text-stone-400 cursor-not-allowed"
-                      : isDark
-                        ? "bg-[#f0bf5c] text-[#412d00] shadow-[#f0bf5c]/10 hover:brightness-110"
-                        : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
-                  }`}
-                >
-                  {savingSettings ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    <CheckCircle size={14} />
-                  )}
-                  <span>{savingSettings ? "Menyimpan..." : "Simpan Semua Pengaturan"}</span>
-                </button>
+                {/* Submit Button */}
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    disabled={savingSettings}
+                    className={`px-6 py-3 rounded-lg font-bold text-xs tracking-wider uppercase transition-all shadow-lg flex items-center gap-2 cursor-pointer ${
+                      savingSettings
+                        ? "bg-stone-700 text-stone-400 cursor-not-allowed"
+                        : isDark
+                          ? "bg-[#f0bf5c] text-[#412d00] shadow-[#f0bf5c]/10 hover:brightness-110"
+                          : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
+                    }`}
+                  >
+                    {savingSettings ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      <CheckCircle size={14} />
+                    )}
+                    <span>{savingSettings ? "Menyimpan..." : "Simpan Semua Pengaturan"}</span>
+                  </button>
+                </div>
               </div>
             </form>
           </div>
@@ -2795,6 +2820,13 @@ export default function SellerPortal({
           </div>
         </div>
       )}
+      
+      {/* Tutorial Overlay */}
+      <SellerTutorialGuide 
+        theme={theme}
+        isOpen={showTutorial}
+        onClose={() => setShowTutorial(false)}
+      />
     </main>
   );
 }
