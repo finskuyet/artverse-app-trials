@@ -635,7 +635,7 @@ export default function CartCheckout({
                     <div className="flex flex-wrap gap-2 justify-center md:justify-start">
                       <a
                         href={paymentSettings.qrisImage}
-                        download="Finszart-QRIS-Payment.png"
+                        download="FinszArt-QRIS-Payment.png"
                         target="_blank"
                         rel="noreferrer"
                         className={`flex items-center gap-1.5 px-3 py-1.5 rounded text-[10px] font-bold transition-all cursor-pointer border ${

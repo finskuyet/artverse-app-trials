@@ -75,7 +75,7 @@ export default function TutorialGuide({
     },
     {
       targetId: "ai-chatbot-btn",
-      title: "Asisten AI Finszart ✨",
+      title: "Asisten AI FinszArt ✨",
       description: "Punya pertanyaan tentang lukisan? Ketuk ikon ini untuk mengobrol dengan asisten kecerdasan buatan kami. AI ini bisa merekomendasikan karya dan menjelaskan filosofi seni!",
       icon: <Sparkles className="w-5 h-5 text-[#f0bf5c]" />,
       tooltip: "Ngobrol dengan AI"
@@ -83,7 +83,7 @@ export default function TutorialGuide({
     {
       targetId: "nav-guide",
       title: "Pusat Panduan Tour 💡",
-      description: "Kapan pun Anda membutuhkan penjelasan tentang fitur-fitur galeri virtual Finszart kembali, Anda selalu dapat menekan tombol Panduan ini untuk mengulangi tour interaktif.",
+      description: "Kapan pun Anda membutuhkan penjelasan tentang fitur-fitur galeri virtual FinszArt kembali, Anda selalu dapat menekan tombol Panduan ini untuk mengulangi tour interaktif.",
       icon: <HelpCircle className="w-5 h-5 text-emerald-400" />,
       tooltip: "Buka Kembali Tour Kapan Saja"
     }

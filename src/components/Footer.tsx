@@ -13,13 +13,13 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
   const [contactEmail, setContactEmail] = useState("inquire@finszart.com");
   const [contactPhone, setContactPhone] = useState("+62 811-0000-0000");
   const [contactAddress, setContactAddress] = useState("Studio: SCBD, Jakarta, Indonesia.");
-  const [aboutUsText, setAboutUsText] = useState("Finszart adalah galeri seni premium digital yang didirikan pada tahun 2026. Kami berdedikasi untuk menghubungkan mahakarya seniman terbaik dengan para kolektor seni dari seluruh dunia dengan kurasi yang ketat dan jaminan keaslian.");
+  const [aboutUsText, setAboutUsText] = useState("FinszArt adalah galeri seni premium digital yang didirikan pada tahun 2026. Kami berdedikasi untuk menghubungkan mahakarya seniman terbaik dengan para kolektor seni dari seluruh dunia dengan kurasi yang ketat dan jaminan keaslian.");
   const [faqText, setFaqText] = useState("T: Apakah lukisan dilengkapi sertifikat?\nJ: Ya, setiap pembelian dilengkapi dengan Sertifikat Keaslian fisik bersertifikasi.\n\nT: Bisakah dibatalkan?\nJ: Pembatalan hanya dapat dilakukan dalam kurun waktu 24 jam setelah pembayaran.");
   const [shippingText, setShippingText] = useState("Kami menggunakan jasa kurir asuransi khusus seni rupa (fine-art logistics) untuk menjamin lukisan tiba dengan aman tanpa cacat. Pengiriman memakan waktu 2-5 hari untuk domestik, dan 7-14 hari untuk internasional.");
-  const [termsText, setTermsText] = useState("Dengan mengakses, menggunakan, atau melakukan transaksi di Finszart, Anda dianggap telah membaca, memahami, dan menyetujui semua aturan hak cipta, perlindungan privasi, dan protokol jual beli benda seni otentik yang berlaku.");
+  const [termsText, setTermsText] = useState("Dengan mengakses, menggunakan, atau melakukan transaksi di FinszArt, Anda dianggap telah membaca, memahami, dan menyetujui semua aturan hak cipta, perlindungan privasi, dan protokol jual beli benda seni otentik yang berlaku.");
   const [footerDescription, setFooterDescription] = useState("Menghubungkan kolektor elit dengan mahakarya seniman terbaik melalui platform digital yang terkurasi dengan sempurna.");
   const [galleryText, setGalleryText] = useState("Koleksi kami mencakup ratusan lukisan otentik dari berbagai aliran mulai dari Realisme klasik hingga Abstrak kontemporer. Anda dapat menjelajahi keseluruhan katalog kami langsung dari Halaman Utama.");
-  const [artistText, setArtistText] = useState("Saat ini Finszart telah bekerja sama secara eksklusif dengan lebih dari 50 pelukis maestro dan seniman muda berbakat dari kancah lokal maupun internasional.");
+  const [artistText, setArtistText] = useState("Saat ini FinszArt telah bekerja sama secara eksklusif dengan lebih dari 50 pelukis maestro dan seniman muda berbakat dari kancah lokal maupun internasional.");
   const [exhibitionText, setExhibitionText] = useState("Fitur Pameran 3D Virtual interaktif saat ini sedang dalam tahap pengembangan akhir oleh tim insinyur kami. Segera hadir untuk memberikan Anda pengalaman menjelajah galeri secara imersif dari rumah!");
 
   useEffect(() => {
@@ -203,7 +203,7 @@ export default function Footer({ theme = "dark", onSecretAccess }: FooterProps) 
         isDark ? "border-[#f0bf5c]/5 text-[#d2c5b1]/80" : "border-stone-200 text-stone-500"
       }`}>
         <p>
-          © 2026 Finszart Fine Art Gallery. All rights reserved. 
+          &copy; 2026 FinszArt Fine Art Gallery. All rights reserved. 
           <button onClick={onSecretAccess} className="ml-2 text-[8px] opacity-0 hover:opacity-50 cursor-pointer">
             Portal Penjual
           </button>

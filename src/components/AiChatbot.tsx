@@ -107,7 +107,7 @@ export default function AiChatbot({ theme = "dark" }: AiChatbotProps) {
                 <Sparkles size={16} />
               </div>
               <div>
-                <h3 className={`font-display font-bold text-sm ${isDark ? "text-white" : "text-stone-900"}`}>Finszart AI Assistant</h3>
+                <h3 className={`font-display font-bold text-sm ${isDark ? "text-white" : "text-stone-900"}`}>FinszArt AI Assistant</h3>
                 <p className={`text-[10px] ${isDark ? "text-stone-400" : "text-stone-500"}`}>Kurator Galeri Virtual Anda</p>
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function AiChatbot({ theme = "dark" }: AiChatbotProps) {
               <div className="flex flex-col items-center mt-6">
                 <div className={`text-center text-xs mb-6 ${isDark ? "text-stone-400" : "text-stone-500"}`}>
                   <Sparkles size={24} className="mx-auto mb-2 opacity-50" />
-                  <p>Halo! Saya asisten AI Finszart.</p>
+                  <p>Halo! Saya asisten AI FinszArt.</p>
                   <p className="mt-1">Tanyakan saya tentang lukisan, filosofi seni, atau rekomendasi karya untuk ruangan Anda.</p>
                 </div>
                 

@@ -564,7 +564,7 @@ export default function SellerPortal({
 
     worksheet.columns.forEach(column => { column.width = 22; });
     const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer]), `riwayat-pesanan-finszart-${new Date().toISOString().split("T")[0]}.xlsx`);
+    saveAs(new Blob([buffer]), `riwayat-pesanan-FinszArt-${new Date().toISOString().split("T")[0]}.xlsx`);
   };
 
   // Export Newsletter to Excel (Real XLSX)
@@ -594,7 +594,7 @@ export default function SellerPortal({
 
     worksheet.columns.forEach(column => { column.width = 25; });
     const buffer = await workbook.xlsx.writeBuffer();
-    saveAs(new Blob([buffer]), `daftar-buletin-finszart-${new Date().toISOString().split("T")[0]}.xlsx`);
+    saveAs(new Blob([buffer]), `daftar-buletin-FinszArt-${new Date().toISOString().split("T")[0]}.xlsx`);
   };
 
   // Quick edit artwork status directly from catalog table
@@ -793,7 +793,7 @@ export default function SellerPortal({
           <h1 className={`font-display text-3xl md:text-4xl font-bold mt-1 ${
             isDark ? "text-white" : "text-stone-900"
           }`}>
-            Finszart Management Portal
+            FinszArt Management Portal
           </h1>
         </div>
 
@@ -2034,8 +2034,8 @@ export default function SellerPortal({
                 <a
                   href={
                     typeof window !== "undefined" && /Mobi|Android|Tablet|iPad|iPhone/i.test(navigator.userAgent)
-                      ? `mailto:?bcc=${newsletterSubs.map(s => s.email).join(",")}&subject=Pembaruan%20Katalog%20Finszart&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`
-                      : `https://mail.google.com/mail/?view=cm&fs=1&bcc=${newsletterSubs.map(s => s.email).join(",")}&su=Pembaruan%20Katalog%20Finszart&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`
+                      ? `mailto:?bcc=${newsletterSubs.map(s => s.email).join(",")}&subject=Pembaruan%20Katalog%20FinszArt&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`
+                      : `https://mail.google.com/mail/?view=cm&fs=1&bcc=${newsletterSubs.map(s => s.email).join(",")}&su=Pembaruan%20Katalog%20FinszArt&body=Halo%20pecinta%20seni,%0D%0A%0D%0AKami%20memiliki%20pembaruan%20karya%20seni%20terbaru%20untuk%20Anda!`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
