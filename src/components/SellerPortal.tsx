@@ -69,6 +69,7 @@ export default function SellerPortal({
   // Catalog filters
   const [catalogCategoryFilter, setCatalogCategoryFilter] = useState("Kategori");
   const [catalogYearFilter, setCatalogYearFilter] = useState("Tahun");
+  const [showCatalogFilter, setShowCatalogFilter] = useState(false);
 
   // Edit/Zoom Modal States
   const [zoomReceiptUrl, setZoomReceiptUrl] = useState<string | null>(null);
@@ -1061,11 +1062,24 @@ export default function SellerPortal({
         <div className={`rounded-xl overflow-hidden shadow-xl animate-in fade-in duration-300 border ${
           isDark ? "glass-panel border-[#f0bf5c]/10" : "bg-white border-stone-200"
         }`}>
-          <div className={`p-6 border-b flex justify-between items-center ${
+          <div className={`p-6 border-b flex flex-col md:flex-row justify-between items-start md:items-center gap-4 ${
             isDark ? "border-[#f0bf5c]/10 bg-[#1f1b14]/50" : "border-stone-200 bg-stone-50"
           }`}>
-            <h2 className={`font-display text-lg font-bold ${isDark ? "text-white" : "text-stone-900"}`}>Daftar Katalog Karya Seni</h2>
-            <div className="flex items-center gap-2">
+            <div className="flex justify-between items-center w-full md:w-auto">
+              <h2 className={`font-display text-lg font-bold ${isDark ? "text-white" : "text-stone-900"}`}>Daftar Katalog Karya Seni</h2>
+              <button 
+                onClick={() => setShowCatalogFilter(!showCatalogFilter)}
+                className={`md:hidden flex items-center justify-center p-2 rounded-lg border transition-all ${
+                  isDark 
+                    ? showCatalogFilter ? "bg-[#f0bf5c] text-[#412d00] border-[#f0bf5c]" : "bg-[#1f1b14] border-[#4e4637]/30 text-[#ebe1d6]"
+                    : showCatalogFilter ? "bg-[#c89b3c] text-white border-[#c89b3c]" : "bg-stone-50 border-stone-200 text-stone-800"
+                }`}
+              >
+                <SlidersHorizontal size={18} />
+              </button>
+            </div>
+            
+            <div className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full md:w-auto ${showCatalogFilter ? 'flex' : 'hidden md:flex'}`}>
               {/* Category Filter */}
               <select
                 value={catalogCategoryFilter}
@@ -1105,28 +1119,32 @@ export default function SellerPortal({
                 <option>Lama</option>
               </select>
 
-              <button
-                onClick={handleClearSoldArtworks}
-                className={`font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer px-3 py-2 rounded border ${
-                  isDark 
-                    ? "bg-[#1f1b14] border-red-500/30 text-red-400 hover:bg-red-500/10" 
-                    : "bg-white border-red-200 text-red-600 hover:bg-red-50"
-                }`}
-              >
-                <Trash2 size={14} />
-                <span className="hidden sm:inline">Bersihkan Karya Terjual</span>
-              </button>
-              <button
-                onClick={() => setActiveTab("upload")}
-                className={`font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer px-4 py-2 rounded ${
-                  isDark 
-                    ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" 
-                    : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
-                }`}
-              >
-                <Plus size={14} />
-                <span className="hidden sm:inline">Tambah Baru</span>
-              </button>
+              <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                <button
+                  onClick={handleClearSoldArtworks}
+                  className={`font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer px-3 py-2 rounded border flex-1 sm:flex-none ${
+                    isDark 
+                      ? "bg-[#1f1b14] border-red-500/30 text-red-400 hover:bg-red-500/10" 
+                      : "bg-white border-red-200 text-red-600 hover:bg-red-50"
+                  }`}
+                >
+                  <Trash2 size={14} />
+                  <span className="hidden sm:inline">Bersihkan Terjual</span>
+                  <span className="sm:hidden">Bersihkan</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab("upload")}
+                  className={`font-bold text-xs flex items-center justify-center gap-1.5 transition-all cursor-pointer px-4 py-2 rounded flex-1 sm:flex-none ${
+                    isDark 
+                      ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" 
+                      : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
+                  }`}
+                >
+                  <Plus size={14} />
+                  <span className="hidden sm:inline">Tambah Baru</span>
+                  <span className="sm:hidden">Tambah</span>
+                </button>
+              </div>
             </div>
           </div>
 

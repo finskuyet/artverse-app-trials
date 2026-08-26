@@ -56,6 +56,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
   const [priceFilter, setPriceFilter] = useState("Rentang Harga");
   const [yearFilter, setYearFilter] = useState("Tahun");
   const [statusFilter, setStatusFilter] = useState("Status");
+  const [showMobileFilter, setShowMobileFilter] = useState(false);
 
   // Scroll tracking to hide filters on mobile and tablet when scrolling down
   const [showFilters, setShowFilters] = useState(true);
@@ -287,10 +288,23 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
                 }`}
               />
             </div>
+            
+            {/* Mobile Filter Toggle */}
+            <button 
+              onClick={() => setShowMobileFilter(!showMobileFilter)}
+              className={`lg:hidden flex items-center justify-center p-3 rounded-lg border transition-all ${
+                isDark 
+                  ? showMobileFilter ? "bg-[#f0bf5c] text-[#412d00] border-[#f0bf5c]" : "bg-[#1f1b14] border-[#4e4637]/30 text-[#ebe1d6]"
+                  : showMobileFilter ? "bg-[#c89b3c] text-white border-[#c89b3c]" : "bg-stone-50 border-stone-200 text-stone-800"
+              }`}
+            >
+              <SlidersHorizontal size={20} />
+            </button>
+          </div>
 
-            {/* Dropdown Filters */}
-            <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
-              {/* Category */}
+          {/* Dropdown Filters */}
+          <div className={`flex flex-wrap items-center gap-3 mt-4 lg:mt-0 ${showMobileFilter ? "flex" : "hidden lg:flex"} w-full lg:w-auto`}>
+            {/* Category */}
               <div className="relative flex-1 min-w-[120px] lg:flex-none">
                 <select
                   value={categoryFilter}
