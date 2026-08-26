@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Lock, Sparkles, TrendingUp, DollarSign, Image as ImageIcon, Plus, CheckCircle, Trash2, Edit2, MessageSquare, AlertCircle, RefreshCw, Layers, Check, ShoppingBag, Eye, X, Loader2, Truck, Mail } from "lucide-react";
+import { Lock, Sparkles, TrendingUp, DollarSign, Image as ImageIcon, Plus, CheckCircle, Trash2, Edit2, MessageSquare, AlertCircle, RefreshCw, Layers, Check, ShoppingBag, Eye, X, Loader2, Truck, Mail, SlidersHorizontal } from "lucide-react";
 import { Artwork, Order, Message } from "../types";
 import ExcelJS from "exceljs";
 import { saveAs } from "file-saver";
