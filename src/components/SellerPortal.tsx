@@ -248,6 +248,40 @@ export default function SellerPortal({
     }
   };
 
+  const handleEditArtwork = (art: Artwork) => {
+    setEditingArtwork(art);
+    setTitle(art.title);
+    setArtist(art.artist);
+    setCategory(art.category);
+    setYear(art.year);
+    setSize(art.size);
+    setMedium(art.medium);
+    setPrice(art.price.toString());
+    setStatus(art.status);
+    setDescription(art.description);
+    setUploadImage(art.image);
+    setUploadFileName("Gambar saat ini (Biarkan jika tidak ingin diubah)");
+    setActiveTab("upload");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingArtwork(null);
+    setTitle("");
+    setArtist("Andini Kusuma");
+    setCategory("Realisme Klasik");
+    setYear("2026");
+    setSize("");
+    setMedium("Cat Minyak pada Kanvas");
+    setPrice("");
+    setStatus("Tersedia");
+    setDescription("");
+    setUploadImage("");
+    setUploadFileName("");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setActiveTab("catalog");
+  };
+
   // Submit new Artwork form
   const handleCreateArtwork = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -260,8 +294,10 @@ export default function SellerPortal({
     }
 
     try {
-      const res = await fetch("/api/artworks", {
-        method: "POST",
+      const url = editingArtwork ? `/api/artworks/${editingArtwork.id}` : "/api/artworks";
+      const method = editingArtwork ? "PUT" : "POST";
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title,
@@ -284,6 +320,7 @@ export default function SellerPortal({
         setDescription("");
         setUploadImage("");
         setUploadFileName("");
+        setEditingArtwork(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
         
         setTimeout(() => setUploadSuccess(false), 4000);
@@ -827,7 +864,7 @@ export default function SellerPortal({
                 : "text-stone-600 hover:text-stone-950 hover:bg-stone-100 border-transparent"
           }`}
         >
-          📤 Unggah Lukisan
+          {editingArtwork ? "✏️ Edit Lukisan" : "📤 Unggah Lukisan"}
         </button>
 
         <button
@@ -1137,8 +1174,8 @@ export default function SellerPortal({
                   }`}
                 >
                   <Plus size={14} />
-                  <span className="hidden sm:inline">Tambah Baru</span>
-                  <span className="sm:hidden">Tambah</span>
+                  <span className="hidden sm:inline">{editingArtwork ? "Batal Edit" : "Tambah Baru"}</span>
+                  <span className="sm:hidden">{editingArtwork ? "Batal" : "Tambah"}</span>
                 </button>
               </div>
             </div>
@@ -1209,6 +1246,15 @@ export default function SellerPortal({
                     <td className="p-4 text-center">
                       <div className="flex gap-2 justify-center">
                         <button
+                          onClick={() => handleEditArtwork(art)}
+                          className={`p-1.5 rounded hover:bg-emerald-500/10 transition-colors ${
+                            isDark ? "text-[#9b8f7d] hover:text-emerald-400" : "text-stone-400 hover:text-emerald-600"
+                          }`}
+                          title="Edit Karya"
+                        >
+                          <Edit2 size={14} />
+                        </button>
+                        <button
                           onClick={() => setDeletingArt(art)}
                           className={`p-1.5 rounded hover:bg-red-500/10 transition-colors ${
                             isDark ? "text-[#9b8f7d] hover:text-red-400" : "text-stone-400 hover:text-red-600"
@@ -1236,7 +1282,9 @@ export default function SellerPortal({
             isDark ? "border-[#f0bf5c]/10" : "border-stone-200"
           }`}>
             <Plus className={isDark ? "text-[#f0bf5c]" : "text-[#c89b3c]"} size={20} />
-            <h2 className={`font-display text-lg font-bold ${isDark ? "text-white" : "text-stone-900"}`}>Unggah Karya Seni Baru</h2>
+            <h2 className={`font-display text-lg font-bold ${isDark ? "text-white" : "text-stone-900"}`}>
+              {editingArtwork ? "Edit Karya Seni" : "Unggah Karya Seni Baru"}
+            </h2>
           </div>
 
           {uploadSuccess && (
@@ -1246,7 +1294,7 @@ export default function SellerPortal({
                 : "bg-green-50 text-green-700 border-green-200"
             }`}>
               <CheckCircle size={16} />
-              <span>Lukisan baru berhasil disimpan ke database katalog!</span>
+              <span>{editingArtwork ? "Perubahan lukisan berhasil disimpan!" : "Lukisan baru berhasil disimpan ke database katalog!"}</span>
             </div>
           )}
 
@@ -1478,7 +1526,20 @@ export default function SellerPortal({
             </div>
 
             {/* Form footer submit */}
-            <div className={`pt-6 border-t ${isDark ? "border-[#f0bf5c]/10" : "border-stone-200"} text-right`}>
+            <div className={`pt-6 border-t ${isDark ? "border-[#f0bf5c]/10" : "border-stone-200"} flex flex-col md:flex-row justify-end gap-3`}>
+              {editingArtwork && (
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className={`font-bold px-6 py-3.5 rounded-lg transition-all text-xs tracking-wider uppercase border cursor-pointer ${
+                    isDark 
+                      ? "border-[#4e4637]/50 text-[#d2c5b1] hover:bg-[#1f1b14]" 
+                      : "border-stone-300 text-stone-600 hover:bg-stone-50"
+                  }`}
+                >
+                  Batal Edit
+                </button>
+              )}
               <button
                 type="submit"
                 className={`font-bold px-8 py-3.5 rounded-lg hover:brightness-110 active:scale-95 transition-all text-xs tracking-wider uppercase shadow-lg cursor-pointer ${
@@ -1487,7 +1548,7 @@ export default function SellerPortal({
                     : "bg-[#c89b3c] text-white hover:bg-[#b08530] shadow-md"
                 }`}
               >
-                Simpan Lukisan ke Katalog
+                {editingArtwork ? "Simpan Perubahan" : "Simpan Lukisan ke Katalog"}
               </button>
             </div>
           </form>
