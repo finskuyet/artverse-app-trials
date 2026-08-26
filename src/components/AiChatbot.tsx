@@ -126,10 +126,34 @@ export default function AiChatbot({ theme = "dark" }: AiChatbotProps) {
             isDark ? "bg-[#110e08]/50" : "bg-stone-50/50"
           }`}>
             {messages.length === 0 && (
-              <div className={`text-center mt-10 text-xs ${isDark ? "text-stone-400" : "text-stone-500"}`}>
-                <Sparkles size={24} className="mx-auto mb-2 opacity-50" />
-                <p>Halo! Saya asisten AI Artverse.</p>
-                <p className="mt-1">Tanyakan saya tentang lukisan, filosofi seni, atau rekomendasi karya untuk ruangan Anda.</p>
+              <div className="flex flex-col items-center mt-6">
+                <div className={`text-center text-xs mb-6 ${isDark ? "text-stone-400" : "text-stone-500"}`}>
+                  <Sparkles size={24} className="mx-auto mb-2 opacity-50" />
+                  <p>Halo! Saya asisten AI Artverse.</p>
+                  <p className="mt-1">Tanyakan saya tentang lukisan, filosofi seni, atau rekomendasi karya untuk ruangan Anda.</p>
+                </div>
+                
+                {/* Panduan / Saran Pertanyaan */}
+                <div className="flex flex-col gap-2 w-full">
+                  <p className={`text-[10px] uppercase tracking-widest font-bold mb-1 ${isDark ? "text-stone-500" : "text-stone-400"}`}>Coba tanyakan:</p>
+                  {[
+                    "Apa lukisan yang paling murah di galeri?",
+                    "Rekomendasi lukisan bertema alam?",
+                    "Jelaskan aliran gaya Impresionisme."
+                  ].map((suggestion, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setInput(suggestion)}
+                      className={`text-left text-xs p-3 rounded-xl border transition-colors ${
+                        isDark 
+                          ? "bg-[#1f1b14] border-[#4e4637]/50 hover:border-[#f0bf5c] text-stone-300" 
+                          : "bg-white border-stone-200 hover:border-[#c89b3c] text-stone-600"
+                      }`}
+                    >
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
               </div>
             )}
             
