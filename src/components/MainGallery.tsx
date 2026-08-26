@@ -141,11 +141,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
 
     // Year filter
     if (yearFilter !== "Tahun") {
-      if (yearFilter === "Lama") {
-        temp = temp.filter((art) => Number(art.year) < 2022);
-      } else {
-        temp = temp.filter((art) => art.year === yearFilter);
-      }
+      temp = temp.filter((art) => art.year === yearFilter);
     }
 
     // Status filter
@@ -222,6 +218,9 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
       console.error("Error sending inquiry message", err);
     }
   };
+
+  const uniqueCategories = Array.from(new Set(artworks.map(a => a.category).filter(Boolean))).sort();
+  const uniqueYears = Array.from(new Set(artworks.map(a => a.year).filter(Boolean))).sort().reverse();
 
   return (
     <div className={`pt-20 transition-colors duration-300 ${isDark ? "" : "bg-[#fbf9f6]"}`}>
@@ -316,12 +315,9 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
                   }`}
                 >
                   <option>Kategori</option>
-                  <option>Realisme Klasik</option>
-                  <option>Abstrak Modern</option>
-                  <option>Impressionisme</option>
-                  <option>Surealisme</option>
-                  <option>Ink on Canvas</option>
-                  <option>Ekspresionisme</option>
+                  {uniqueCategories.map(cat => (
+                    <option key={cat} value={cat}>{cat}</option>
+                  ))}
                 </select>
                 <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9b8f7d] pointer-events-none" size={14} />
               </div>
@@ -358,12 +354,9 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
                   }`}
                 >
                   <option>Tahun</option>
-                  <option>2026</option>
-                  <option>2025</option>
-                  <option>2024</option>
-                  <option>2023</option>
-                  <option>2022</option>
-                  <option>Lama</option>
+                  {uniqueYears.map(year => (
+                    <option key={year} value={year}>{year}</option>
+                  ))}
                 </select>
                 <ChevronDown className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#9b8f7d] pointer-events-none" size={14} />
               </div>

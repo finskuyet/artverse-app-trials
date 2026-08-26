@@ -732,6 +732,9 @@ export default function SellerPortal({
     );
   }
 
+  const uniqueCategories = Array.from(new Set(artworks.map(a => a.category).filter(Boolean))).sort();
+  const uniqueYears = Array.from(new Set(artworks.map(a => a.year).filter(Boolean))).sort().reverse();
+
   return (
     <main className={`pt-28 pb-24 px-6 md:px-12 max-w-7xl mx-auto min-h-screen transition-colors duration-300 ${
       isDark ? "" : "text-stone-900"
@@ -1091,13 +1094,9 @@ export default function SellerPortal({
                 }`}
               >
                 <option>Kategori</option>
-                <option>Realisme Klasik</option>
-                <option>Abstrak Modern</option>
-                <option>Impressionisme</option>
-                <option>Surealisme</option>
-                <option>Ink on Canvas</option>
-                <option>Ekspresionisme</option>
-                <option>Abstrak Jawa</option>
+                {uniqueCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
               </select>
 
               {/* Year Filter */}
@@ -1111,12 +1110,9 @@ export default function SellerPortal({
                 }`}
               >
                 <option>Tahun</option>
-                <option>2026</option>
-                <option>2025</option>
-                <option>2024</option>
-                <option>2023</option>
-                <option>2022</option>
-                <option>Lama</option>
+                {uniqueYears.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
               </select>
 
               <div className="flex items-center gap-2 mt-2 sm:mt-0">
@@ -1171,14 +1167,7 @@ export default function SellerPortal({
                   .filter((art) => {
                     const matchCategory = catalogCategoryFilter === "Kategori" || art.category === catalogCategoryFilter;
                     // For year filter: handle "Lama" correctly if year < 2022
-                    let matchYear = true;
-                    if (catalogYearFilter !== "Tahun") {
-                      if (catalogYearFilter === "Lama") {
-                        matchYear = parseInt(art.year) < 2022;
-                      } else {
-                        matchYear = art.year === catalogYearFilter;
-                      }
-                    }
+                    let matchYear = catalogYearFilter === "Tahun" || art.year === catalogYearFilter;
                     return matchCategory && matchYear;
                   })
                   .map((art) => (
