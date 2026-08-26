@@ -391,7 +391,6 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
               </button>
             </div>
           </div>
-        </div>
       </section>
 
       {/* Artworks grid list */}
