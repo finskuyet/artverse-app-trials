@@ -302,16 +302,16 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
           </div>
 
           {/* Dropdown Filters */}
-          <div className={`flex flex-wrap items-center gap-3 mt-4 lg:mt-0 ${showMobileFilter ? "flex" : "hidden lg:flex"} w-full lg:w-auto`}>
+          <div className={`mt-4 w-full gap-3 ${showMobileFilter ? "grid grid-cols-2" : "hidden"} md:grid-cols-3 lg:grid-cols-5 lg:grid`}>
             {/* Category */}
-              <div className="relative flex-1 min-w-[120px] lg:flex-none">
+              <div className="relative w-full">
                 <select
                   value={categoryFilter}
                   onChange={(e) => setCategoryFilter(e.target.value)}
                   className={`appearance-none w-full rounded-lg py-3 pl-4 pr-10 text-xs font-semibold cursor-pointer outline-none transition-all font-sans ${
                     isDark 
                       ? "bg-[#1f1b14] border border-[#4e4637]/30 text-[#ebe1d6] hover:border-[#f0bf5c]/50" 
-                      : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50"
+                      : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50 focus:ring-2 focus:ring-[#c89b3c]/20"
                   }`}
                 >
                   <option>Kategori</option>
@@ -323,14 +323,14 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
               </div>
 
               {/* Price Range */}
-              <div className="relative flex-1 min-w-[130px] lg:flex-none">
+              <div className="relative w-full">
                 <select
                   value={priceFilter}
                   onChange={(e) => setPriceFilter(e.target.value)}
                   className={`appearance-none w-full rounded-lg py-3 pl-4 pr-10 text-xs font-semibold cursor-pointer outline-none transition-all font-sans ${
                     isDark 
                       ? "bg-[#1f1b14] border border-[#4e4637]/30 text-[#ebe1d6] hover:border-[#f0bf5c]/50" 
-                      : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50"
+                      : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50 focus:ring-2 focus:ring-[#c89b3c]/20"
                   }`}
                 >
                   <option>Rentang Harga</option>
@@ -343,14 +343,14 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
               </div>
 
               {/* Year */}
-              <div className="relative flex-1 min-w-[100px] lg:flex-none">
+              <div className="relative w-full">
                 <select
                   value={yearFilter}
                   onChange={(e) => setYearFilter(e.target.value)}
                   className={`appearance-none w-full rounded-lg py-3 pl-4 pr-10 text-xs font-semibold cursor-pointer outline-none transition-all font-sans ${
                     isDark 
                       ? "bg-[#1f1b14] border border-[#4e4637]/30 text-[#ebe1d6] hover:border-[#f0bf5c]/50" 
-                      : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50"
+                      : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50 focus:ring-2 focus:ring-[#c89b3c]/20"
                   }`}
                 >
                   <option>Tahun</option>
@@ -362,14 +362,14 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
               </div>
 
               {/* Status */}
-              <div className="relative flex-1 min-w-[110px] lg:flex-none">
+              <div className="relative w-full">
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
                   className={`appearance-none w-full rounded-lg py-3 pl-4 pr-10 text-xs font-semibold cursor-pointer outline-none transition-all font-sans ${
                     isDark 
                       ? "bg-[#1f1b14] border border-[#4e4637]/30 text-[#ebe1d6] hover:border-[#f0bf5c]/50" 
-                      : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50"
+                      : "bg-white border border-stone-200 text-stone-800 hover:border-[#c89b3c]/50 focus:ring-2 focus:ring-[#c89b3c]/20"
                   }`}
                 >
                   <option>Status</option>
@@ -382,7 +382,7 @@ export default function MainGallery({ addToCart, cartItemIds, theme = "dark", is
 
               <button
                 onClick={handleApplyFilters}
-                className={`px-5 py-3 rounded-lg font-bold text-xs flex items-center gap-2 transition-all cursor-pointer shadow-lg active:scale-95 flex-1 lg:flex-none justify-center ${
+                className={`w-full col-span-2 md:col-span-3 lg:col-span-1 px-5 py-3 rounded-lg font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg active:scale-95 ${
                   isDark ? "bg-[#f0bf5c] text-[#412d00] hover:brightness-110" : "bg-[#c89b3c] text-white hover:bg-[#b08530]"
                 }`}
               >
