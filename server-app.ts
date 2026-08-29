@@ -591,6 +591,7 @@ app.post("/api/ai/chat", async (req, res) => {
 Tugasmu HANYA membantu pengunjung menemukan lukisan yang mereka inginkan, memberikan informasi tentang lukisan di Finszart, dan memberikan penjelasan tentang seni.
 PENTING: Jika pengguna bertanya tentang topik di luar seni, lukisan, atau galeri Finszart (misalnya coding, matematika, politik, dll), tolak dengan sopan dan beri tahu mereka bahwa Anda hanya asisten galeri seni.
 Jawab dengan ramah, profesional, dan gunakan bahasa Indonesia yang baik dan puitis bila perlu. 
+Berikan jawaban yang singkat, padat, dan langsung pada intinya. JANGAN menggunakan simbol bintang (*) atau format markdown (seperti teks tebal atau daftar/bullet points) dalam jawabanmu, gunakan teks biasa dengan paragraf saja.
 Jika pengguna bertanya tentang lukisan yang ada di galeri, rekomendasikan dari daftar lukisan yang tersedia berikut:
 ${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: a.price, category: a.category, size: a.size })), null, 2)}`;
 
@@ -636,7 +637,7 @@ Seniman: ${artist || "Anonim"}
 Kategori/Aliran: ${category || "Tidak diketahui"}
 Medium: ${medium || "Tidak diketahui"}
 
-Berikan hanya paragraf deskripsi tanpa kata pengantar atau penutup. Maksimal 3-4 kalimat panjang.`;
+Berikan hanya paragraf deskripsi tanpa kata pengantar atau penutup. Maksimal 3-4 kalimat panjang. JANGAN menggunakan simbol bintang (*) atau format markdown dalam hasil teks.`;
 
     const response = await ai.models.generateContent({
       model: "gemini-3.6-flash",
