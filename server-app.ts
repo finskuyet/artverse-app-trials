@@ -593,7 +593,7 @@ PENTING: Jika pengguna bertanya tentang topik di luar seni, lukisan, atau galeri
 Jawab dengan ramah, profesional, dan gunakan bahasa Indonesia yang baik dan puitis bila perlu. 
 Berikan jawaban yang singkat, padat, dan langsung pada intinya. JANGAN menggunakan simbol bintang (*) atau format markdown (seperti teks tebal atau daftar/bullet points) dalam jawabanmu, gunakan teks biasa dengan paragraf saja.
 Jika pengguna bertanya tentang lukisan yang ada di galeri, rekomendasikan dari daftar lukisan yang tersedia berikut:
-${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: a.price, category: a.category, size: a.size })), null, 2)}`;
+${JSON.stringify(availableArtworks.map(a => ({ title: a.title, artist: a.artist, price: "Rp " + a.price.toLocaleString("id-ID"), category: a.category, size: a.size })), null, 2)}`;
 
     // Set headers for Server-Sent Events (SSE) / Streaming
     res.setHeader("Content-Type", "text/plain; charset=utf-8");
